@@ -1,0 +1,398 @@
+\hypertarget{rgbd__slam_8cpp}{\section{/home/zby/uav\-\_\-slam\-\_\-ws/src/rgbd\-\_\-slam/src/rgbd\-\_\-slam.cpp File Reference}
+\label{rgbd__slam_8cpp}\index{/home/zby/uav\-\_\-slam\-\_\-ws/src/rgbd\-\_\-slam/src/rgbd\-\_\-slam.\-cpp@{/home/zby/uav\-\_\-slam\-\_\-ws/src/rgbd\-\_\-slam/src/rgbd\-\_\-slam.\-cpp}}
+}
+{\ttfamily \#include $<$fstream$>$}\\*
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$map$>$}\\*
+{\ttfamily \#include $<$sstream$>$}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include $<$g2o/core/block\-\_\-solver.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/core/factory.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/core/optimization\-\_\-algorithm\-\_\-factory.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/core/optimization\-\_\-algorithm\-\_\-gauss\-\_\-newton.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/core/optimization\-\_\-algorithm\-\_\-levenberg.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/core/robust\-\_\-kernel.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/core/robust\-\_\-kernel\-\_\-impl.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/core/sparse\-\_\-optimizer.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/solvers/eigen/linear\-\_\-solver\-\_\-eigen.\-h$>$}\\*
+{\ttfamily \#include $<$g2o/types/slam3d/types\-\_\-slam3d.\-h$>$}\\*
+{\ttfamily \#include $<$Eigen/\-Core$>$}\\*
+{\ttfamily \#include $<$Eigen/\-Geometry$>$}\\*
+{\ttfamily \#include $<$opencv2/calib3d/calib3d.\-hpp$>$}\\*
+{\ttfamily \#include $<$opencv2/core/core.\-hpp$>$}\\*
+{\ttfamily \#include $<$opencv2/core/eigen.\-hpp$>$}\\*
+{\ttfamily \#include $<$opencv2/highgui/highgui.\-hpp$>$}\\*
+{\ttfamily \#include $<$opencv2/nonfree/nonfree.\-hpp$>$}\\*
+{\ttfamily \#include \char`\"{}opencv2/imgproc/imgproc.\-hpp\char`\"{}}\\*
+{\ttfamily \#include $<$opencv2/features2d/features2d.\-hpp$>$}\\*
+{\ttfamily \#include $<$pcl/common/transforms.\-h$>$}\\*
+{\ttfamily \#include $<$pcl/features/normal\-\_\-3d.\-h$>$}\\*
+{\ttfamily \#include $<$pcl/filters/passthrough.\-h$>$}\\*
+{\ttfamily \#include $<$pcl/filters/statistical\-\_\-outlier\-\_\-removal.\-h$>$}\\*
+{\ttfamily \#include $<$pcl/filters/voxel\-\_\-grid.\-h$>$}\\*
+{\ttfamily \#include $<$pcl/io/pcd\-\_\-io.\-h$>$}\\*
+{\ttfamily \#include $<$pcl/point\-\_\-types.\-h$>$}\\*
+{\ttfamily \#include $<$pcl/visualization/cloud\-\_\-viewer.\-h$>$}\\*
+{\ttfamily \#include $<$octomap/\-Color\-Oc\-Tree.\-h$>$}\\*
+{\ttfamily \#include $<$octomap/octomap.\-h$>$}\\*
+{\ttfamily \#include $<$cv\-\_\-bridge/cv\-\_\-bridge.\-h$>$}\\*
+{\ttfamily \#include $<$geometry\-\_\-msgs/\-Twist.\-h$>$}\\*
+{\ttfamily \#include $<$image\-\_\-transport/image\-\_\-transport.\-h$>$}\\*
+{\ttfamily \#include $<$ros/ros.\-h$>$}\\*
+{\ttfamily \#include $<$sensor\-\_\-msgs/image\-\_\-encodings.\-h$>$}\\*
+{\ttfamily \#include $<$std\-\_\-msgs/\-Empty.\-h$>$}\\*
+{\ttfamily \#include $<$std\-\_\-msgs/\-Int16.\-h$>$}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_parameter_reader}{Parameter\-Reader}
+\item 
+struct \hyperlink{struct_c_a_m_e_r_a___i_n_t_r_i_n_s_i_c___p_a_r_a_m_e_t_e_r_s}{C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S}
+\item 
+struct \hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E}
+\item 
+struct \hyperlink{struct_r_e_s_u_l_t___o_f___p_n_p}{R\-E\-S\-U\-L\-T\-\_\-\-O\-F\-\_\-\-P\-N\-P}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_ab702106cf3b3e96750b6845ded4e0299}{R\-E\-S\-E\-T}~\char`\"{}\textbackslash{}033\mbox{[}0m\char`\"{}
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_a7b3b25cba33b07c303f3060fe41887f6}{B\-L\-A\-C\-K}~\char`\"{}\textbackslash{}033\mbox{[}30m\char`\"{}              /$\ast$ Black $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_a8d23feea868a983c8c2b661e1e16972f}{R\-E\-D}~\char`\"{}\textbackslash{}033\mbox{[}31m\char`\"{}                /$\ast$ Red $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_acfbc006ea433ad708fdee3e82996e721}{G\-R\-E\-E\-N}~\char`\"{}\textbackslash{}033\mbox{[}32m\char`\"{}              /$\ast$ Green $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_abf681265909adf3d3e8116c93c0ba179}{Y\-E\-L\-L\-O\-W}~\char`\"{}\textbackslash{}033\mbox{[}33m\char`\"{}             /$\ast$ Yellow $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_a79d10e672abb49ad63eeaa8aaef57c38}{B\-L\-U\-E}~\char`\"{}\textbackslash{}033\mbox{[}34m\char`\"{}               /$\ast$ Blue $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_a6f699060902f800f12aaae150f3a708e}{M\-A\-G\-E\-N\-T\-A}~\char`\"{}\textbackslash{}033\mbox{[}35m\char`\"{}            /$\ast$ Magenta $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_ad243f93c16bc4c1d3e0a13b84421d760}{C\-Y\-A\-N}~\char`\"{}\textbackslash{}033\mbox{[}36m\char`\"{}               /$\ast$ Cyan $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_a87b537f5fa5c109d3c05c13d6b18f382}{W\-H\-I\-T\-E}~\char`\"{}\textbackslash{}033\mbox{[}37m\char`\"{}              /$\ast$ White $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_aef2fe95894117165b29036718221979f}{B\-O\-L\-D\-B\-L\-A\-C\-K}~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}30m\char`\"{}   /$\ast$ Bold Black $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_ab912d02c7998c3d47d05f87be4e2c920}{B\-O\-L\-D\-R\-E\-D}~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}31m\char`\"{}     /$\ast$ Bold Red $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_a4a6c893a1703c33ede7d702fe5f97c91}{B\-O\-L\-D\-G\-R\-E\-E\-N}~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}32m\char`\"{}   /$\ast$ Bold Green $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_a8cec79108dfc3c61e8e32d390ec28b26}{B\-O\-L\-D\-Y\-E\-L\-L\-O\-W}~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}33m\char`\"{}  /$\ast$ Bold Yellow $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_a11e77c19555cbd15bcc744ff36a18635}{B\-O\-L\-D\-B\-L\-U\-E}~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}34m\char`\"{}    /$\ast$ Bold Blue $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_ac4723c5ee12cfca16e2172b57b99cb07}{B\-O\-L\-D\-M\-A\-G\-E\-N\-T\-A}~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}35m\char`\"{} /$\ast$ Bold Magenta $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_ae87af5e6363eb1913b17f24dcb60a22d}{B\-O\-L\-D\-C\-Y\-A\-N}~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}36m\char`\"{}    /$\ast$ Bold Cyan $\ast$/
+\item 
+\#define \hyperlink{rgbd__slam_8cpp_aa4ef051614aa0bd503b0a18ee158c5d7}{B\-O\-L\-D\-W\-H\-I\-T\-E}~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}37m\char`\"{}   /$\ast$ Bold White $\ast$/
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef pcl\-::\-Point\-X\-Y\-Z\-R\-G\-B \hyperlink{rgbd__slam_8cpp_af63aa02ad22799ec1b392e97942874b5}{Point\-T}
+\item 
+typedef pcl\-::\-Point\-Cloud$<$ \hyperlink{rgbd__slam_8cpp_af63aa02ad22799ec1b392e97942874b5}{Point\-T} $>$ \hyperlink{rgbd__slam_8cpp_aa6b13b73029db097ce680a016f4d6108}{Point\-Cloud}
+\item 
+typedef g2o\-::\-Block\-Solver\-\_\-6\-\_\-3 \hyperlink{rgbd__slam_8cpp_ad637cfd9211cc46032e3559a37a8876d}{Slam\-Block\-Solver}
+\item 
+typedef g2o\-::\-Linear\-Solver\-Eigen\\*
+$<$ Slam\-Block\-Solver\-::\-Pose\-Matrix\-Type $>$ \hyperlink{rgbd__slam_8cpp_aa453cd9fb29eaf52debd8f4daed9cc32}{Slam\-Linear\-Solver}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9d}{C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T} \{ \hyperlink{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da9bb3ad648125b6c4808bcb726c2674d4}{N\-O\-T\-\_\-\-M\-A\-T\-C\-H\-E\-D} = 0, 
+\hyperlink{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da03874e99e53e1782ba8b583e189a897b}{T\-O\-O\-\_\-\-F\-A\-R\-\_\-\-A\-W\-A\-Y}, 
+\hyperlink{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da3a51b0890145a6808bcbfd1481517efd}{T\-O\-O\-\_\-\-C\-L\-O\-S\-E}, 
+\hyperlink{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da1ba36a709cb3ac3520f4ba65e30a540c}{K\-E\-Y\-F\-R\-A\-M\-E}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \hyperlink{rgbd__slam_8cpp_acf6f4be3ca33cf594c7a7d6085f3b83a}{read\-Frame} (int index, \hyperlink{class_parameter_reader}{Parameter\-Reader} \&pd)
+\item 
+double \hyperlink{rgbd__slam_8cpp_a2d63494fc31c74b4984d2c6867479a04}{normof\-Transform} (cv\-::\-Mat rvec, cv\-::\-Mat tvec)
+\item 
+\hyperlink{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9d}{C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T} \hyperlink{rgbd__slam_8cpp_a5a7dff3cdd299cd3f017cb45e55263db}{check\-Keyframes} (\hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \&f1, \hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \&f2, g2o\-::\-Sparse\-Optimizer \&opti, bool is\-\_\-loops=false)
+\item 
+void \hyperlink{rgbd__slam_8cpp_a0044498ccd01ab2ed8fc564270080390}{check\-Nearby\-Loops} (vector$<$ \hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} $>$ \&frames, \hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \&curr\-Frame, g2o\-::\-Sparse\-Optimizer \&opti)
+\item 
+void \hyperlink{rgbd__slam_8cpp_a95e94dabf87b8ddd271fae53066fe365}{check\-Random\-Loops} (vector$<$ \hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} $>$ \&frames, \hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \&curr\-Frame, g2o\-::\-Sparse\-Optimizer \&opti)
+\item 
+Point\-Cloud\-::\-Ptr \hyperlink{rgbd__slam_8cpp_a4ecc123aa179e254d877a025a92bbadd}{image2\-Point\-Cloud} (cv\-::\-Mat \&rgb, cv\-::\-Mat \&depth, \hyperlink{struct_c_a_m_e_r_a___i_n_t_r_i_n_s_i_c___p_a_r_a_m_e_t_e_r_s}{C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \&camera)
+\item 
+cv\-::\-Point3f \hyperlink{rgbd__slam_8cpp_a0c0caa97d4b01b469cb6b415fe787b33}{point2d\-To3d} (cv\-::\-Point3f \&point, \hyperlink{struct_c_a_m_e_r_a___i_n_t_r_i_n_s_i_c___p_a_r_a_m_e_t_e_r_s}{C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \&camera)
+\item 
+void \hyperlink{rgbd__slam_8cpp_a3beb1806e11bdcc417f3a30a1ccd6ef5}{compute\-Key\-Points\-And\-Desp} (\hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \&frame, string detector, string descriptor)
+\item 
+\hyperlink{struct_r_e_s_u_l_t___o_f___p_n_p}{R\-E\-S\-U\-L\-T\-\_\-\-O\-F\-\_\-\-P\-N\-P} \hyperlink{rgbd__slam_8cpp_a490deb9e4f7c2abc08cea03db0893086}{estimate\-Motion} (\hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \&frame1, \hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \&frame2, \hyperlink{struct_c_a_m_e_r_a___i_n_t_r_i_n_s_i_c___p_a_r_a_m_e_t_e_r_s}{C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \&camera)
+\item 
+Eigen\-::\-Isometry3d \hyperlink{rgbd__slam_8cpp_a0f818eadaa3b99fc8542c7cc90a28942}{cv\-Mat2\-Eigen} (cv\-::\-Mat \&rvec, cv\-::\-Mat \&tvec)
+\item 
+Point\-Cloud\-::\-Ptr \hyperlink{rgbd__slam_8cpp_a360b39e6658222f5eab6d798cbc8862e}{join\-Point\-Cloud} (Point\-Cloud\-::\-Ptr original, \hyperlink{struct_f_r_a_m_e}{F\-R\-A\-M\-E} \&new\-Frame, Eigen\-::\-Isometry3d T, \hyperlink{struct_c_a_m_e_r_a___i_n_t_r_i_n_s_i_c___p_a_r_a_m_e_t_e_r_s}{C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \&camera)
+\item 
+\hyperlink{struct_c_a_m_e_r_a___i_n_t_r_i_n_s_i_c___p_a_r_a_m_e_t_e_r_s}{C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \hyperlink{rgbd__slam_8cpp_afffe8d1c392da7abd80cbc08ab6055ea}{get\-Default\-Camera} ()
+\item 
+void \hyperlink{rgbd__slam_8cpp_a17fa916ba532b8993ee7e38bc9a2624c}{rgb\-Image\-Callback} (const sensor\-\_\-msgs\-::\-Image\-::\-Const\-Ptr msg)
+\item 
+void \hyperlink{rgbd__slam_8cpp_a3235af7e6f325ca5dc5614045d3c0d4f}{depth\-Image\-Callback} (const sensor\-\_\-msgs\-::\-Image\-::\-Const\-Ptr msg)
+\item 
+void \hyperlink{rgbd__slam_8cpp_ab6933778f0fb1a95525c35dfb03ecf36}{print\-\_\-query\-\_\-info} (point3d query, Color\-Oc\-Tree\-Node $\ast$node)
+\item 
+int \hyperlink{rgbd__slam_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{rgbd__slam_8cpp_aee6315e1a20f328f2642c71051f2c992}{task\-Mode} = 0
+\begin{DoxyCompactList}\small\item\em 0 \-: visual odometry, 1 use octomap \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{rgbd__slam_8cpp_a7b3b25cba33b07c303f3060fe41887f6}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-L\-A\-C\-K@{B\-L\-A\-C\-K}}
+\index{B\-L\-A\-C\-K@{B\-L\-A\-C\-K}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-L\-A\-C\-K}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-L\-A\-C\-K~\char`\"{}\textbackslash{}033\mbox{[}30m\char`\"{}              /$\ast$ Black $\ast$/}}\label{rgbd__slam_8cpp_a7b3b25cba33b07c303f3060fe41887f6}
+\hypertarget{rgbd__slam_8cpp_a79d10e672abb49ad63eeaa8aaef57c38}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-L\-U\-E@{B\-L\-U\-E}}
+\index{B\-L\-U\-E@{B\-L\-U\-E}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-L\-U\-E}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-L\-U\-E~\char`\"{}\textbackslash{}033\mbox{[}34m\char`\"{}               /$\ast$ Blue $\ast$/}}\label{rgbd__slam_8cpp_a79d10e672abb49ad63eeaa8aaef57c38}
+\hypertarget{rgbd__slam_8cpp_aef2fe95894117165b29036718221979f}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-O\-L\-D\-B\-L\-A\-C\-K@{B\-O\-L\-D\-B\-L\-A\-C\-K}}
+\index{B\-O\-L\-D\-B\-L\-A\-C\-K@{B\-O\-L\-D\-B\-L\-A\-C\-K}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-O\-L\-D\-B\-L\-A\-C\-K}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-O\-L\-D\-B\-L\-A\-C\-K~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}30m\char`\"{}   /$\ast$ Bold Black $\ast$/}}\label{rgbd__slam_8cpp_aef2fe95894117165b29036718221979f}
+\hypertarget{rgbd__slam_8cpp_a11e77c19555cbd15bcc744ff36a18635}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-O\-L\-D\-B\-L\-U\-E@{B\-O\-L\-D\-B\-L\-U\-E}}
+\index{B\-O\-L\-D\-B\-L\-U\-E@{B\-O\-L\-D\-B\-L\-U\-E}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-O\-L\-D\-B\-L\-U\-E}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-O\-L\-D\-B\-L\-U\-E~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}34m\char`\"{}    /$\ast$ Bold Blue $\ast$/}}\label{rgbd__slam_8cpp_a11e77c19555cbd15bcc744ff36a18635}
+\hypertarget{rgbd__slam_8cpp_ae87af5e6363eb1913b17f24dcb60a22d}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-O\-L\-D\-C\-Y\-A\-N@{B\-O\-L\-D\-C\-Y\-A\-N}}
+\index{B\-O\-L\-D\-C\-Y\-A\-N@{B\-O\-L\-D\-C\-Y\-A\-N}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-O\-L\-D\-C\-Y\-A\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-O\-L\-D\-C\-Y\-A\-N~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}36m\char`\"{}    /$\ast$ Bold Cyan $\ast$/}}\label{rgbd__slam_8cpp_ae87af5e6363eb1913b17f24dcb60a22d}
+\hypertarget{rgbd__slam_8cpp_a4a6c893a1703c33ede7d702fe5f97c91}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-O\-L\-D\-G\-R\-E\-E\-N@{B\-O\-L\-D\-G\-R\-E\-E\-N}}
+\index{B\-O\-L\-D\-G\-R\-E\-E\-N@{B\-O\-L\-D\-G\-R\-E\-E\-N}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-O\-L\-D\-G\-R\-E\-E\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-O\-L\-D\-G\-R\-E\-E\-N~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}32m\char`\"{}   /$\ast$ Bold Green $\ast$/}}\label{rgbd__slam_8cpp_a4a6c893a1703c33ede7d702fe5f97c91}
+\hypertarget{rgbd__slam_8cpp_ac4723c5ee12cfca16e2172b57b99cb07}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-O\-L\-D\-M\-A\-G\-E\-N\-T\-A@{B\-O\-L\-D\-M\-A\-G\-E\-N\-T\-A}}
+\index{B\-O\-L\-D\-M\-A\-G\-E\-N\-T\-A@{B\-O\-L\-D\-M\-A\-G\-E\-N\-T\-A}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-O\-L\-D\-M\-A\-G\-E\-N\-T\-A}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-O\-L\-D\-M\-A\-G\-E\-N\-T\-A~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}35m\char`\"{} /$\ast$ Bold Magenta $\ast$/}}\label{rgbd__slam_8cpp_ac4723c5ee12cfca16e2172b57b99cb07}
+\hypertarget{rgbd__slam_8cpp_ab912d02c7998c3d47d05f87be4e2c920}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-O\-L\-D\-R\-E\-D@{B\-O\-L\-D\-R\-E\-D}}
+\index{B\-O\-L\-D\-R\-E\-D@{B\-O\-L\-D\-R\-E\-D}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-O\-L\-D\-R\-E\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-O\-L\-D\-R\-E\-D~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}31m\char`\"{}     /$\ast$ Bold Red $\ast$/}}\label{rgbd__slam_8cpp_ab912d02c7998c3d47d05f87be4e2c920}
+\hypertarget{rgbd__slam_8cpp_aa4ef051614aa0bd503b0a18ee158c5d7}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-O\-L\-D\-W\-H\-I\-T\-E@{B\-O\-L\-D\-W\-H\-I\-T\-E}}
+\index{B\-O\-L\-D\-W\-H\-I\-T\-E@{B\-O\-L\-D\-W\-H\-I\-T\-E}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-O\-L\-D\-W\-H\-I\-T\-E}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-O\-L\-D\-W\-H\-I\-T\-E~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}37m\char`\"{}   /$\ast$ Bold White $\ast$/}}\label{rgbd__slam_8cpp_aa4ef051614aa0bd503b0a18ee158c5d7}
+\hypertarget{rgbd__slam_8cpp_a8cec79108dfc3c61e8e32d390ec28b26}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!B\-O\-L\-D\-Y\-E\-L\-L\-O\-W@{B\-O\-L\-D\-Y\-E\-L\-L\-O\-W}}
+\index{B\-O\-L\-D\-Y\-E\-L\-L\-O\-W@{B\-O\-L\-D\-Y\-E\-L\-L\-O\-W}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{B\-O\-L\-D\-Y\-E\-L\-L\-O\-W}]{\setlength{\rightskip}{0pt plus 5cm}\#define B\-O\-L\-D\-Y\-E\-L\-L\-O\-W~\char`\"{}\textbackslash{}033\mbox{[}1m\textbackslash{}033\mbox{[}33m\char`\"{}  /$\ast$ Bold Yellow $\ast$/}}\label{rgbd__slam_8cpp_a8cec79108dfc3c61e8e32d390ec28b26}
+\hypertarget{rgbd__slam_8cpp_ad243f93c16bc4c1d3e0a13b84421d760}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!C\-Y\-A\-N@{C\-Y\-A\-N}}
+\index{C\-Y\-A\-N@{C\-Y\-A\-N}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{C\-Y\-A\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define C\-Y\-A\-N~\char`\"{}\textbackslash{}033\mbox{[}36m\char`\"{}               /$\ast$ Cyan $\ast$/}}\label{rgbd__slam_8cpp_ad243f93c16bc4c1d3e0a13b84421d760}
+\hypertarget{rgbd__slam_8cpp_acfbc006ea433ad708fdee3e82996e721}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!G\-R\-E\-E\-N@{G\-R\-E\-E\-N}}
+\index{G\-R\-E\-E\-N@{G\-R\-E\-E\-N}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{G\-R\-E\-E\-N}]{\setlength{\rightskip}{0pt plus 5cm}\#define G\-R\-E\-E\-N~\char`\"{}\textbackslash{}033\mbox{[}32m\char`\"{}              /$\ast$ Green $\ast$/}}\label{rgbd__slam_8cpp_acfbc006ea433ad708fdee3e82996e721}
+\hypertarget{rgbd__slam_8cpp_a6f699060902f800f12aaae150f3a708e}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!M\-A\-G\-E\-N\-T\-A@{M\-A\-G\-E\-N\-T\-A}}
+\index{M\-A\-G\-E\-N\-T\-A@{M\-A\-G\-E\-N\-T\-A}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{M\-A\-G\-E\-N\-T\-A}]{\setlength{\rightskip}{0pt plus 5cm}\#define M\-A\-G\-E\-N\-T\-A~\char`\"{}\textbackslash{}033\mbox{[}35m\char`\"{}            /$\ast$ Magenta $\ast$/}}\label{rgbd__slam_8cpp_a6f699060902f800f12aaae150f3a708e}
+\hypertarget{rgbd__slam_8cpp_a8d23feea868a983c8c2b661e1e16972f}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!R\-E\-D@{R\-E\-D}}
+\index{R\-E\-D@{R\-E\-D}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{R\-E\-D}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-E\-D~\char`\"{}\textbackslash{}033\mbox{[}31m\char`\"{}                /$\ast$ Red $\ast$/}}\label{rgbd__slam_8cpp_a8d23feea868a983c8c2b661e1e16972f}
+\hypertarget{rgbd__slam_8cpp_ab702106cf3b3e96750b6845ded4e0299}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!R\-E\-S\-E\-T@{R\-E\-S\-E\-T}}
+\index{R\-E\-S\-E\-T@{R\-E\-S\-E\-T}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{R\-E\-S\-E\-T}]{\setlength{\rightskip}{0pt plus 5cm}\#define R\-E\-S\-E\-T~\char`\"{}\textbackslash{}033\mbox{[}0m\char`\"{}}}\label{rgbd__slam_8cpp_ab702106cf3b3e96750b6845ded4e0299}
+\hypertarget{rgbd__slam_8cpp_a87b537f5fa5c109d3c05c13d6b18f382}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!W\-H\-I\-T\-E@{W\-H\-I\-T\-E}}
+\index{W\-H\-I\-T\-E@{W\-H\-I\-T\-E}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{W\-H\-I\-T\-E}]{\setlength{\rightskip}{0pt plus 5cm}\#define W\-H\-I\-T\-E~\char`\"{}\textbackslash{}033\mbox{[}37m\char`\"{}              /$\ast$ White $\ast$/}}\label{rgbd__slam_8cpp_a87b537f5fa5c109d3c05c13d6b18f382}
+\hypertarget{rgbd__slam_8cpp_abf681265909adf3d3e8116c93c0ba179}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!Y\-E\-L\-L\-O\-W@{Y\-E\-L\-L\-O\-W}}
+\index{Y\-E\-L\-L\-O\-W@{Y\-E\-L\-L\-O\-W}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{Y\-E\-L\-L\-O\-W}]{\setlength{\rightskip}{0pt plus 5cm}\#define Y\-E\-L\-L\-O\-W~\char`\"{}\textbackslash{}033\mbox{[}33m\char`\"{}             /$\ast$ Yellow $\ast$/}}\label{rgbd__slam_8cpp_abf681265909adf3d3e8116c93c0ba179}
+
+
+\subsection{Typedef Documentation}
+\hypertarget{rgbd__slam_8cpp_aa6b13b73029db097ce680a016f4d6108}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!Point\-Cloud@{Point\-Cloud}}
+\index{Point\-Cloud@{Point\-Cloud}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{Point\-Cloud}]{\setlength{\rightskip}{0pt plus 5cm}typedef pcl\-::\-Point\-Cloud$<${\bf Point\-T}$>$ {\bf Point\-Cloud}}}\label{rgbd__slam_8cpp_aa6b13b73029db097ce680a016f4d6108}
+\hypertarget{rgbd__slam_8cpp_af63aa02ad22799ec1b392e97942874b5}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!Point\-T@{Point\-T}}
+\index{Point\-T@{Point\-T}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{Point\-T}]{\setlength{\rightskip}{0pt plus 5cm}typedef pcl\-::\-Point\-X\-Y\-Z\-R\-G\-B {\bf Point\-T}}}\label{rgbd__slam_8cpp_af63aa02ad22799ec1b392e97942874b5}
+\hypertarget{rgbd__slam_8cpp_ad637cfd9211cc46032e3559a37a8876d}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!Slam\-Block\-Solver@{Slam\-Block\-Solver}}
+\index{Slam\-Block\-Solver@{Slam\-Block\-Solver}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{Slam\-Block\-Solver}]{\setlength{\rightskip}{0pt plus 5cm}typedef g2o\-::\-Block\-Solver\-\_\-6\-\_\-3 {\bf Slam\-Block\-Solver}}}\label{rgbd__slam_8cpp_ad637cfd9211cc46032e3559a37a8876d}
+\hypertarget{rgbd__slam_8cpp_aa453cd9fb29eaf52debd8f4daed9cc32}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!Slam\-Linear\-Solver@{Slam\-Linear\-Solver}}
+\index{Slam\-Linear\-Solver@{Slam\-Linear\-Solver}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{Slam\-Linear\-Solver}]{\setlength{\rightskip}{0pt plus 5cm}typedef g2o\-::\-Linear\-Solver\-Eigen$<$Slam\-Block\-Solver\-::\-Pose\-Matrix\-Type$>$ {\bf Slam\-Linear\-Solver}}}\label{rgbd__slam_8cpp_aa453cd9fb29eaf52debd8f4daed9cc32}
+
+
+\subsection{Enumeration Type Documentation}
+\hypertarget{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9d}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T@{C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T}}
+\index{C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T@{C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T}}}\label{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9d}
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{N\-O\-T\-\_\-\-M\-A\-T\-C\-H\-E\-D@{N\-O\-T\-\_\-\-M\-A\-T\-C\-H\-E\-D}!rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}}\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!N\-O\-T\-\_\-\-M\-A\-T\-C\-H\-E\-D@{N\-O\-T\-\_\-\-M\-A\-T\-C\-H\-E\-D}}\item[{\em 
+\hypertarget{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da9bb3ad648125b6c4808bcb726c2674d4}{N\-O\-T\-\_\-\-M\-A\-T\-C\-H\-E\-D}\label{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da9bb3ad648125b6c4808bcb726c2674d4}
+}]\index{T\-O\-O\-\_\-\-F\-A\-R\-\_\-\-A\-W\-A\-Y@{T\-O\-O\-\_\-\-F\-A\-R\-\_\-\-A\-W\-A\-Y}!rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}}\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!T\-O\-O\-\_\-\-F\-A\-R\-\_\-\-A\-W\-A\-Y@{T\-O\-O\-\_\-\-F\-A\-R\-\_\-\-A\-W\-A\-Y}}\item[{\em 
+\hypertarget{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da03874e99e53e1782ba8b583e189a897b}{T\-O\-O\-\_\-\-F\-A\-R\-\_\-\-A\-W\-A\-Y}\label{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da03874e99e53e1782ba8b583e189a897b}
+}]\index{T\-O\-O\-\_\-\-C\-L\-O\-S\-E@{T\-O\-O\-\_\-\-C\-L\-O\-S\-E}!rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}}\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!T\-O\-O\-\_\-\-C\-L\-O\-S\-E@{T\-O\-O\-\_\-\-C\-L\-O\-S\-E}}\item[{\em 
+\hypertarget{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da3a51b0890145a6808bcbfd1481517efd}{T\-O\-O\-\_\-\-C\-L\-O\-S\-E}\label{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da3a51b0890145a6808bcbfd1481517efd}
+}]\index{K\-E\-Y\-F\-R\-A\-M\-E@{K\-E\-Y\-F\-R\-A\-M\-E}!rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}}\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!K\-E\-Y\-F\-R\-A\-M\-E@{K\-E\-Y\-F\-R\-A\-M\-E}}\item[{\em 
+\hypertarget{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da1ba36a709cb3ac3520f4ba65e30a540c}{K\-E\-Y\-F\-R\-A\-M\-E}\label{rgbd__slam_8cpp_a5c344e221ed189ebcc9b8363e730da9da1ba36a709cb3ac3520f4ba65e30a540c}
+}]\end{description}
+\end{Desc}
+
+
+\subsection{Function Documentation}
+\hypertarget{rgbd__slam_8cpp_a5a7dff3cdd299cd3f017cb45e55263db}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!check\-Keyframes@{check\-Keyframes}}
+\index{check\-Keyframes@{check\-Keyframes}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{check\-Keyframes}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\-H\-E\-C\-K\-\_\-\-R\-E\-S\-U\-L\-T} check\-Keyframes (
+\begin{DoxyParamCaption}
+\item[{{\bf F\-R\-A\-M\-E} \&}]{f1, }
+\item[{{\bf F\-R\-A\-M\-E} \&}]{f2, }
+\item[{g2o\-::\-Sparse\-Optimizer \&}]{opti, }
+\item[{bool}]{is\-\_\-loops = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a5a7dff3cdd299cd3f017cb45e55263db}
+\hypertarget{rgbd__slam_8cpp_a0044498ccd01ab2ed8fc564270080390}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!check\-Nearby\-Loops@{check\-Nearby\-Loops}}
+\index{check\-Nearby\-Loops@{check\-Nearby\-Loops}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{check\-Nearby\-Loops}]{\setlength{\rightskip}{0pt plus 5cm}void check\-Nearby\-Loops (
+\begin{DoxyParamCaption}
+\item[{vector$<$ {\bf F\-R\-A\-M\-E} $>$ \&}]{frames, }
+\item[{{\bf F\-R\-A\-M\-E} \&}]{curr\-Frame, }
+\item[{g2o\-::\-Sparse\-Optimizer \&}]{opti}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a0044498ccd01ab2ed8fc564270080390}
+\hypertarget{rgbd__slam_8cpp_a95e94dabf87b8ddd271fae53066fe365}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!check\-Random\-Loops@{check\-Random\-Loops}}
+\index{check\-Random\-Loops@{check\-Random\-Loops}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{check\-Random\-Loops}]{\setlength{\rightskip}{0pt plus 5cm}void check\-Random\-Loops (
+\begin{DoxyParamCaption}
+\item[{vector$<$ {\bf F\-R\-A\-M\-E} $>$ \&}]{frames, }
+\item[{{\bf F\-R\-A\-M\-E} \&}]{curr\-Frame, }
+\item[{g2o\-::\-Sparse\-Optimizer \&}]{opti}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a95e94dabf87b8ddd271fae53066fe365}
+\hypertarget{rgbd__slam_8cpp_a3beb1806e11bdcc417f3a30a1ccd6ef5}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!compute\-Key\-Points\-And\-Desp@{compute\-Key\-Points\-And\-Desp}}
+\index{compute\-Key\-Points\-And\-Desp@{compute\-Key\-Points\-And\-Desp}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{compute\-Key\-Points\-And\-Desp}]{\setlength{\rightskip}{0pt plus 5cm}void compute\-Key\-Points\-And\-Desp (
+\begin{DoxyParamCaption}
+\item[{{\bf F\-R\-A\-M\-E} \&}]{frame, }
+\item[{string}]{detector, }
+\item[{string}]{descriptor}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a3beb1806e11bdcc417f3a30a1ccd6ef5}
+\hypertarget{rgbd__slam_8cpp_a0f818eadaa3b99fc8542c7cc90a28942}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!cv\-Mat2\-Eigen@{cv\-Mat2\-Eigen}}
+\index{cv\-Mat2\-Eigen@{cv\-Mat2\-Eigen}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{cv\-Mat2\-Eigen}]{\setlength{\rightskip}{0pt plus 5cm}Eigen\-::\-Isometry3d cv\-Mat2\-Eigen (
+\begin{DoxyParamCaption}
+\item[{cv\-::\-Mat \&}]{rvec, }
+\item[{cv\-::\-Mat \&}]{tvec}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a0f818eadaa3b99fc8542c7cc90a28942}
+\hypertarget{rgbd__slam_8cpp_a3235af7e6f325ca5dc5614045d3c0d4f}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!depth\-Image\-Callback@{depth\-Image\-Callback}}
+\index{depth\-Image\-Callback@{depth\-Image\-Callback}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{depth\-Image\-Callback}]{\setlength{\rightskip}{0pt plus 5cm}void depth\-Image\-Callback (
+\begin{DoxyParamCaption}
+\item[{const sensor\-\_\-msgs\-::\-Image\-::\-Const\-Ptr}]{msg}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a3235af7e6f325ca5dc5614045d3c0d4f}
+\hypertarget{rgbd__slam_8cpp_a490deb9e4f7c2abc08cea03db0893086}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!estimate\-Motion@{estimate\-Motion}}
+\index{estimate\-Motion@{estimate\-Motion}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{estimate\-Motion}]{\setlength{\rightskip}{0pt plus 5cm}{\bf R\-E\-S\-U\-L\-T\-\_\-\-O\-F\-\_\-\-P\-N\-P} estimate\-Motion (
+\begin{DoxyParamCaption}
+\item[{{\bf F\-R\-A\-M\-E} \&}]{frame1, }
+\item[{{\bf F\-R\-A\-M\-E} \&}]{frame2, }
+\item[{{\bf C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \&}]{camera}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a490deb9e4f7c2abc08cea03db0893086}
+\hypertarget{rgbd__slam_8cpp_afffe8d1c392da7abd80cbc08ab6055ea}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!get\-Default\-Camera@{get\-Default\-Camera}}
+\index{get\-Default\-Camera@{get\-Default\-Camera}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{get\-Default\-Camera}]{\setlength{\rightskip}{0pt plus 5cm}{\bf C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} get\-Default\-Camera (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_afffe8d1c392da7abd80cbc08ab6055ea}
+\hypertarget{rgbd__slam_8cpp_a4ecc123aa179e254d877a025a92bbadd}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!image2\-Point\-Cloud@{image2\-Point\-Cloud}}
+\index{image2\-Point\-Cloud@{image2\-Point\-Cloud}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{image2\-Point\-Cloud}]{\setlength{\rightskip}{0pt plus 5cm}Point\-Cloud\-::\-Ptr image2\-Point\-Cloud (
+\begin{DoxyParamCaption}
+\item[{cv\-::\-Mat \&}]{rgb, }
+\item[{cv\-::\-Mat \&}]{depth, }
+\item[{{\bf C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \&}]{camera}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a4ecc123aa179e254d877a025a92bbadd}
+\hypertarget{rgbd__slam_8cpp_a360b39e6658222f5eab6d798cbc8862e}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!join\-Point\-Cloud@{join\-Point\-Cloud}}
+\index{join\-Point\-Cloud@{join\-Point\-Cloud}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{join\-Point\-Cloud}]{\setlength{\rightskip}{0pt plus 5cm}Point\-Cloud\-::\-Ptr join\-Point\-Cloud (
+\begin{DoxyParamCaption}
+\item[{Point\-Cloud\-::\-Ptr}]{original, }
+\item[{{\bf F\-R\-A\-M\-E} \&}]{new\-Frame, }
+\item[{Eigen\-::\-Isometry3d}]{T, }
+\item[{{\bf C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \&}]{camera}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a360b39e6658222f5eab6d798cbc8862e}
+\hypertarget{rgbd__slam_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!main@{main}}
+\index{main@{main}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int main (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}
+\hypertarget{rgbd__slam_8cpp_a2d63494fc31c74b4984d2c6867479a04}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!normof\-Transform@{normof\-Transform}}
+\index{normof\-Transform@{normof\-Transform}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{normof\-Transform}]{\setlength{\rightskip}{0pt plus 5cm}double normof\-Transform (
+\begin{DoxyParamCaption}
+\item[{cv\-::\-Mat}]{rvec, }
+\item[{cv\-::\-Mat}]{tvec}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a2d63494fc31c74b4984d2c6867479a04}
+估计一个运动的大小 
+\begin{DoxyParams}{Parameters}
+{\em rvec} & rotation vector \\
+\hline
+{\em tvec} & translation vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a value represent how far the motion is 
+\end{DoxyReturn}
+\hypertarget{rgbd__slam_8cpp_a0c0caa97d4b01b469cb6b415fe787b33}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!point2d\-To3d@{point2d\-To3d}}
+\index{point2d\-To3d@{point2d\-To3d}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{point2d\-To3d}]{\setlength{\rightskip}{0pt plus 5cm}cv\-::\-Point3f point2d\-To3d (
+\begin{DoxyParamCaption}
+\item[{cv\-::\-Point3f \&}]{point, }
+\item[{{\bf C\-A\-M\-E\-R\-A\-\_\-\-I\-N\-T\-R\-I\-N\-S\-I\-C\-\_\-\-P\-A\-R\-A\-M\-E\-T\-E\-R\-S} \&}]{camera}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a0c0caa97d4b01b469cb6b415fe787b33}
+\hypertarget{rgbd__slam_8cpp_ab6933778f0fb1a95525c35dfb03ecf36}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!print\-\_\-query\-\_\-info@{print\-\_\-query\-\_\-info}}
+\index{print\-\_\-query\-\_\-info@{print\-\_\-query\-\_\-info}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{print\-\_\-query\-\_\-info}]{\setlength{\rightskip}{0pt plus 5cm}void print\-\_\-query\-\_\-info (
+\begin{DoxyParamCaption}
+\item[{point3d}]{query, }
+\item[{Color\-Oc\-Tree\-Node $\ast$}]{node}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_ab6933778f0fb1a95525c35dfb03ecf36}
+\hypertarget{rgbd__slam_8cpp_acf6f4be3ca33cf594c7a7d6085f3b83a}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!read\-Frame@{read\-Frame}}
+\index{read\-Frame@{read\-Frame}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{read\-Frame}]{\setlength{\rightskip}{0pt plus 5cm}{\bf F\-R\-A\-M\-E} read\-Frame (
+\begin{DoxyParamCaption}
+\item[{int}]{index, }
+\item[{{\bf Parameter\-Reader} \&}]{pd}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_acf6f4be3ca33cf594c7a7d6085f3b83a}
+\hypertarget{rgbd__slam_8cpp_a17fa916ba532b8993ee7e38bc9a2624c}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!rgb\-Image\-Callback@{rgb\-Image\-Callback}}
+\index{rgb\-Image\-Callback@{rgb\-Image\-Callback}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{rgb\-Image\-Callback}]{\setlength{\rightskip}{0pt plus 5cm}void rgb\-Image\-Callback (
+\begin{DoxyParamCaption}
+\item[{const sensor\-\_\-msgs\-::\-Image\-::\-Const\-Ptr}]{msg}
+\end{DoxyParamCaption}
+)}}\label{rgbd__slam_8cpp_a17fa916ba532b8993ee7e38bc9a2624c}
+
+
+\subsection{Variable Documentation}
+\hypertarget{rgbd__slam_8cpp_aee6315e1a20f328f2642c71051f2c992}{\index{rgbd\-\_\-slam.\-cpp@{rgbd\-\_\-slam.\-cpp}!task\-Mode@{task\-Mode}}
+\index{task\-Mode@{task\-Mode}!rgbd_slam.cpp@{rgbd\-\_\-slam.\-cpp}}
+\subsubsection[{task\-Mode}]{\setlength{\rightskip}{0pt plus 5cm}int task\-Mode = 0}}\label{rgbd__slam_8cpp_aee6315e1a20f328f2642c71051f2c992}
+
+
+0 \-: visual odometry, 1 use octomap 
+

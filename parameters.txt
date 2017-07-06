@@ -1,0 +1,55 @@
+
+# 这是一个参数文件
+# 去你妹的yaml! 我再也不用yaml了！简简单单多好！
+
+# part 4 里定义的参数
+detector=SIFT
+descriptor=SIFT
+# 筛选good match的倍数
+good_match_threshold=4
+
+# camera
+camera.cx=325.5;
+camera.cy=253.5;
+camera.fx=518.0;
+camera.fy=519.0;
+camera.scale=1000.0;
+
+# part 5 
+# 数据相关
+# 起始与终止索引
+start_index=24
+end_index=90
+# 数据所在目录
+rgb_dir=/home/zby//uav_slam_ws/src/rgbd_slam/res/rgbd-scenes/kitchen_small/kitchen_small_1/kitchen_small_1_
+rgb_extension=.png
+depth_dir=/home/zby//uav_slam_ws/src/rgbd_slam/res/rgbd-scenes/kitchen_small/kitchen_small_1/kitchen_small_1_
+depth_extension=.png
+# 点云分辨率
+voxel_grid=0.02
+#octomap resolution
+tree_resolution=0.1
+# 是否实时可视化
+visualize_pointcloud=yes
+# 最小匹配数量
+min_good_match=5
+# 最小内点
+min_inliers=4
+# 最大运动误差
+max_norm=0.2
+
+# part 7
+keyframe_threshold=0.01
+max_norm_lp=0.5
+# Loop closure
+check_loop_closure=yes
+nearby_loops=3
+random_loops=3
+
+#pcl
+mean_k=50;
+std_dev=2;
+neighbor_radius=0.5;
+
+task_mode=1;
+

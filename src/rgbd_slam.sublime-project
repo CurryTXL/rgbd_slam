@@ -1,0 +1,57 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"highlight_line": true,
+		"sublimeclang_additional_language_options":
+		{
+			"c":
+			[
+			],
+			"c++":
+			[
+				"-std=c++11"
+			],
+			"objc":
+			[
+			],
+			"objc++":
+			[
+			]
+		},
+		"sublimeclang_analyzer_extensions":
+		[
+			"cpp",
+			"h",
+			"c",
+			"cc",
+			"m",
+			"mm"
+		],
+		"sublimeclang_cache_on_load": true,
+		"sublimeclang_enable_fast_completions": true,
+		"sublimeclang_enabled": true,
+		"sublimeclang_inhibit_sublime_completions": true,
+		// "sublimeclang_worker_threadcount": 2,
+		"sublimeclang_reparse_on_activated": false,
+		"sublimeclang_options":
+		[
+			"-I${folder:${project_path:rgbd_slam.sublime-project}}/src/**",
+			"-I${folder:${project_path:rgbd_slam.sublime-project}}/include/**",
+			"-I${folder:${project_path:rgbd_slam.sublime-project}}/**",
+			"-I/usr/include/pcl-1.7",		
+		],
+		"sublimeclang_reparse_on_save": false,
+		"sublimeclang_reparse_use_dirty_buffer": false,
+		"sublimeclang_show_output_panel": true,
+		"sublimeclang_show_status": true,
+		"sublimeclang_show_visual_error_marks": true,
+		"sublimeclang_update_output_panel": true,
+		"sublimeclang_warm_up_in_separate_thread": true
+	}
+}

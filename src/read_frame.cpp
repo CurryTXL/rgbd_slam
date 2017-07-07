@@ -41,6 +41,7 @@ int main(int argc, char **argv)
   /*create windows to show rgb and depth image*/
   cv::namedWindow("rgb_image", 1);
   cv::namedWindow("depth_image", 1);
+  
   /*begin main loop, read image*/
   ROS_INFO_STREAM("begin to read image");
   while(ros::ok())
@@ -56,6 +57,8 @@ int main(int argc, char **argv)
     }
     cv::waitKey(1);
   }
+
+  cv::destroyAllWindows();
   return 0;
 }
 
@@ -90,5 +93,10 @@ void depthImageCallback(const sensor_msgs::Image::ConstPtr msg)
     ROS_ERROR("cv_bridge exception: %s", e.what());
     return;
   }
-  g_depth_image= cv_ptr->image;
+  static double min=0;
+  static double max=6.0;
+  cv::Mat(cv_ptr->image-min)
+      .convertTo(g_depth_image, CV_8UC1, 255. / (max - min));
+
+  // g_depth_image= cv_ptr->image;
 }

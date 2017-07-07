@@ -423,7 +423,7 @@
 			"file": "rgbd_slam.cpp",
 			"settings":
 			{
-				"buffer_size": 40860,
+				"buffer_size": 40875,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -735,15 +735,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 40860,
+						"buffer_size": 40875,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10756,
-								10756
+								17184,
+								17184
 							]
 						],
 						"settings":
@@ -753,7 +753,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 5687.0,
+						"translation.y": 8238.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

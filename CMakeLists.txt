@@ -216,10 +216,14 @@ include_directories(${OCTOMAP_INCLUDE_DIRS})
 message("G2O_INCLUDE_DIR IS ${G2O_INCLUDE_DIR}")
 message("CSPARSE_INCLUDE_DIR IS ${CSPARSE_INCLUDE_DIR}")
 
-add_executable(rgbdslam src/rgbd_slam.cpp)
-target_link_libraries(rgbdslam ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES} Qt5::Widgets 
-g2o_core g2o_types_slam3d g2o_solver_csparse g2o_stuff g2o_csparse_extension /usr/lib/x86_64-linux-gnu/libcxsparse.so.3.1.2
-${OCTOMAP_LIBRARIES})
+# add_executable(rgbdslam src/rgbd_slam.cpp)
+# target_link_libraries(rgbdslam ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES} Qt5::Widgets 
+# g2o_core g2o_types_slam3d g2o_solver_csparse g2o_stuff g2o_csparse_extension /usr/lib/x86_64-linux-gnu/libcxsparse.so.3.1.2
+# ${OCTOMAP_LIBRARIES})
+
+add_executable(read_frame src/read_frame.cpp)
+target_link_libraries(read_frame ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
 # target_link_libraries(rgbdslam ${catkin_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES} Qt5::Widgets)
 
 # add_dependencies(rgbdslam uav_slam_generate_messages_cpp)

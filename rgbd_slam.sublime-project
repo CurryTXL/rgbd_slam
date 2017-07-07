@@ -2,7 +2,7 @@
 	"folders":
 	[
 		{
-			"path": "/home/zby/uav_slam_ws/src/rgbd_slam"
+			"path": "."
 		}
 	],
 	"settings":
@@ -37,14 +37,15 @@
 		"sublimeclang_enable_fast_completions": true,
 		"sublimeclang_enabled": true,
 		"sublimeclang_inhibit_sublime_completions": true,
+		// "sublimeclang_worker_threadcount": 2,
+		"sublimeclang_reparse_on_activated": false,
 		"sublimeclang_options":
 		[
 			"-I${folder:${project_path:rgbd_slam.sublime-project}}/src/**",
 			"-I${folder:${project_path:rgbd_slam.sublime-project}}/include/**",
 			"-I${folder:${project_path:rgbd_slam.sublime-project}}/**",
-			"-I/usr/include/pcl-1.7"
+			"-I/usr/include/pcl-1.7",		
 		],
-		"sublimeclang_reparse_on_activated": false,
 		"sublimeclang_reparse_on_save": false,
 		"sublimeclang_reparse_use_dirty_buffer": false,
 		"sublimeclang_show_output_panel": true,

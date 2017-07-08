@@ -19,11 +19,11 @@ camera.scale=1000.0;
 # 数据相关
 # 起始与终止索引
 start_index=24
-end_index=90
+end_index=120
 # 数据所在目录
-rgb_dir=/home/zby//uav_slam_ws/src/rgbd_slam/res/rgbd-scenes/kitchen_small/kitchen_small_1/kitchen_small_1_
+rgb_dir=/home/zby/Downloads/rgbd-scenes/kitchen_small/kitchen_small_1/kitchen_small_1_
 rgb_extension=.png
-depth_dir=/home/zby//uav_slam_ws/src/rgbd_slam/res/rgbd-scenes/kitchen_small/kitchen_small_1/kitchen_small_1_
+depth_dir=/home/zby/Downloads/rgbd-scenes/kitchen_small/kitchen_small_1/kitchen_small_1_
 depth_extension=.png
 # 点云分辨率
 voxel_grid=0.02
@@ -53,3 +53,4 @@ neighbor_radius=0.5;
 
 task_mode=1;
 
+optimization_frames_number=10;

@@ -1,0 +1,1058 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ROS_INF",
+				"ROS_INFO_STREAM(args)\tmacro"
+			],
+			[
+				"depth",
+				"depth_image"
+			],
+			[
+				"M",
+				"MONO8\tconst std::string"
+			],
+			[
+				"cv_",
+				"cv_ptr\tcv_bridge::CvImagePtr"
+			],
+			[
+				"dep",
+				"depthImageCallback(const sensor_msgs::Image::ConstPtr msg)\tvoid"
+			],
+			[
+				"rgb",
+				"rgbImageCallback(const sensor_msgs::Image::ConstPtr msg)\tvoid"
+			],
+			[
+				"de",
+				"depth"
+			],
+			[
+				"subscrib",
+				"subscribe(const std::string &base_topic, uint32_t queue_size, void (*fp)(const sensor_msgs::ImageConstPtr &))\timage_transport::Subscriber"
+			],
+			[
+				"sub",
+				"subscribe(const std::string &base_topic, uint32_t queue_size, void (*fp)(const sensor_msgs::ImageConstPtr &))\timage_transport::Subscriber"
+			],
+			[
+				"for",
+				"for\tFor Loop"
+			],
+			[
+				"p",
+				"point3d\ttypedef"
+			],
+			[
+				"ma",
+				"Matrix2f\ttypedef"
+			],
+			[
+				"tes",
+				"testFloat()\tfloat"
+			],
+			[
+				"rm",
+				"rm_challenge_fsm"
+			],
+			[
+				"a",
+				"AsyncSpinner\tclass"
+			],
+			[
+				"timer",
+				"timer_callback"
+			],
+			[
+				"vis",
+				"vision_callback"
+			],
+			[
+				"gui",
+				"guidance_callback"
+			],
+			[
+				"rm_uav",
+				"rm_uav_challenge"
+			],
+			[
+				"tar",
+				"target_link_libraries"
+			],
+			[
+				"add",
+				"add_executable"
+			],
+			[
+				"filter",
+				"filtered_normals"
+			],
+			[
+				"cloud",
+				"cloudNormals"
+			],
+			[
+				"final",
+				"final_cluster_cloud"
+			],
+			[
+				"normal",
+				"normal_names"
+			],
+			[
+				"i",
+				"i"
+			],
+			[
+				"cloudna",
+				"cloud_names"
+			],
+			[
+				"filtered",
+				"filtered_frontier"
+			],
+			[
+				"fin",
+				"final_cluster_cloud"
+			],
+			[
+				"clus",
+				"cluster_id"
+			],
+			[
+				"siz",
+				"size"
+			],
+			[
+				"firs",
+				"first_indice"
+			],
+			[
+				"ros",
+				"ROS_INFO_STREAM"
+			],
+			[
+				"dis",
+				"distinct_normal_indices"
+			],
+			[
+				"distin",
+				"distinct_normal_indice"
+			],
+			[
+				"distinc",
+				"distinct_normal_indices"
+			],
+			[
+				"is",
+				"is_distinct"
+			],
+			[
+				"dit",
+				"distinct_normal_indice"
+			],
+			[
+				"si",
+				"size"
+			],
+			[
+				"sim",
+				"similar_normal_indice"
+			],
+			[
+				"clo",
+				"cloud_0"
+			],
+			[
+				"normals",
+				"normals_0"
+			],
+			[
+				"count",
+				"count_labels"
+			],
+			[
+				"cv",
+				"cv_filtered_normals"
+			],
+			[
+				"CV_",
+				"CV_32FC3"
+			],
+			[
+				"labe",
+				"labels"
+			],
+			[
+				"size",
+				"size_t"
+			],
+			[
+				"norma",
+				"normal_centers"
+			],
+			[
+				"cluster",
+				"cluster_count"
+			],
+			[
+				"fil",
+				"filtered_normals"
+			],
+			[
+				"filtered_fr",
+				"filtered_frontier"
+			],
+			[
+				"Point",
+				"PointCloud"
+			],
+			[
+				"ROS",
+				"ROS_INFO_STREAM"
+			],
+			[
+				"front",
+				"frontierCloud"
+			],
+			[
+				"fro",
+				"frontierCloud"
+			],
+			[
+				"clou",
+				"cloudNormals"
+			],
+			[
+				"fron",
+				"frontierCloud"
+			],
+			[
+				"neig",
+				"neighborRadius"
+			],
+			[
+				"frontier",
+				"frontierCloud"
+			],
+			[
+				"fronter",
+				"frontierCloud"
+			],
+			[
+				"froen",
+				"frontier"
+			],
+			[
+				"se",
+				"searchLights"
+			],
+			[
+				"real",
+				"realHeight"
+			],
+			[
+				"G",
+				"GREEN"
+			],
+			[
+				"bgr",
+				"bgrSplit"
+			],
+			[
+				"ex",
+				"extractColor"
+			],
+			[
+				"color",
+				"colorRegion"
+			],
+			[
+				"region",
+				"region2"
+			],
+			[
+				"re",
+				"region1"
+			],
+			[
+				"regi",
+				"region2"
+			],
+			[
+				"larg",
+				"large"
+			],
+			[
+				"hsv",
+				"hsvbin"
+			],
+			[
+				"cam",
+				"cameraPos"
+			],
+			[
+				"generat",
+				"generated"
+			],
+			[
+				"glo",
+				"globalOutput"
+			],
+			[
+				"optiT",
+				"optiThre"
+			],
+			[
+				"opti",
+				"optiTime"
+			],
+			[
+				"cop",
+				"copyTo"
+			],
+			[
+				"occup",
+				"occupancy"
+			],
+			[
+				"insert",
+				"insertRay"
+			],
+			[
+				"test",
+				"testPoint"
+			],
+			[
+				"end",
+				"endl"
+			],
+			[
+				"std",
+				"stdDev"
+			],
+			[
+				"new",
+				"newCloud"
+			],
+			[
+				"tm",
+				"tmp2"
+			],
+			[
+				"setIn",
+				"setInputCloud"
+			],
+			[
+				"outli",
+				"outlierRemoval"
+			],
+			[
+				"fronti",
+				"frontier"
+			],
+			[
+				"get",
+				"getOccupancy"
+			],
+			[
+				"Vox",
+				"VoxelGrid"
+			],
+			[
+				"c",
+				"c_str"
+			],
+			[
+				"pu",
+				"push_back"
+			],
+			[
+				"inte",
+				"integrateNodeColor"
+			],
+			[
+				"point",
+				"point3d"
+			],
+			[
+				"update",
+				"updateInnerOccupancy"
+			],
+			[
+				"Colo",
+				"ColorOcTree"
+			],
+			[
+				"print",
+				"print_query_info"
+			],
+			[
+				"Color",
+				"ColorOcTreeNode"
+			],
+			[
+				"Co",
+				"ColorOcTree"
+			],
+			[
+				"octo",
+				"octomap"
+			],
+			[
+				"tree",
+				"ColorOcTree"
+			],
+			[
+				"include",
+				"include_directories"
+			],
+			[
+				"rgbd",
+				"rgbd_slam"
+			],
+			[
+				"com",
+				"compute"
+			],
+			[
+				"compute",
+				"computeKeyPointAndDesp(FRAME &frame)\tvoid"
+			],
+			[
+				"G2O",
+				"G2O_LIBRARIES"
+			],
+			[
+				"g2O",
+				"G2O_INCLUDE_DIR"
+			],
+			[
+				"ROS_INFO",
+				"ROS_INFO(...)\tmacro"
+			],
+			[
+				"rg",
+				"rgbd_slam"
+			],
+			[
+				"poin",
+				"PointCloud"
+			],
+			[
+				"in",
+				"inc\t#include <…>"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "read_frame.cpp",
+			"settings":
+			{
+				"buffer_size": 2693,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/zby/uav_slam_ws/src/rqt_image_view/src/rqt_image_view/image_view.ui",
+			"settings":
+			{
+				"buffer_size": 6866,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/zby/uav_slam_ws/src/rgbd_slam/CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 7917,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "rgbd_slam.cpp",
+			"settings":
+			{
+				"buffer_size": 42117,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/zby/uav_slam_ws/src/rqt_image_view/src/rqt_image_view/image_view.cpp",
+			"settings":
+			{
+				"buffer_size": 15931,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 242.0,
+		"last_filter": "clang",
+		"selected_items":
+		[
+			[
+				"clang",
+				"SublimeClang: Clear cache"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"Pac",
+				"Install Package Control"
+			],
+			[
+				"Package Control: r",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: re",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 146.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'df21e130d211cfc94d9b0905775a7c0f' + '1e3d39e33b79698005270310898eea76'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os,hashlib; h = ‘2915d1851351e5ee549c20394736b442’ + ‘8bc59f460fa1548d1514676163dafc88’; pf = ‘Package Control.sublime-package’; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( ‘http://packagecontrol.io/’ + pf.replace(’ ‘, ‘%20’)).read(); dh = hashlib.sha256(by).hexdigest(); print(‘Error validating download (got %s instead of %s), please try manual install’ % (dh, h)) if dh != h else open(os.path.join( ipp, pf), ‘wb’ ).write(by) ",
+			"mport urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)  ",
+			"SKLS"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/zby/uav_slam_ws/src/rgbd_slam"
+	],
+	"file_history":
+	[
+		"/home/zby/uav_slam_ws/src/rgbd_slam/rgbd_slam.sublime-project",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/src/rgbd_slam.sublime-project",
+		"/home/zby/uav_slam_ws/auto_format.bash",
+		"/usr/include/pcl-1.7/pcl/visualization/point_cloud_geometry_handlers.h",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/src/rgbd_slam.cpp",
+		"/home/zby/uav_slam_ws/src/rm_uav/rm_uav.sublime-project",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/src/backup",
+		"/usr/include/c++/4.8/bits/c++0x_warning.h",
+		"/home/zby/uav_slam_ws/src/rm_uav/include/rm_challenge_fsm.h",
+		"/home/zby/uav_slam_ws/src/rm_uav/src/rm_uav_challenge.cpp",
+		"/usr/local/include/g2o/core/hyper_graph.h",
+		"/home/zby/.config/sublime-text-3/Packages/SublimeClang/SublimeClang.sublime-settings",
+		"/home/zby/桌面/MyTask.txt",
+		"/home/zby/uav_slam_ws/src/rm_uav/CMakeLists.txt",
+		"/home/zby/uav_slam_ws/src/rm_uav/src/rm_challenge_fsm.cpp",
+		"/home/zby/src/iarc/src/task/IARCFSM.h",
+		"/home/zby/src/iarc/src/task/IARCFSM.cpp",
+		"/home/zby/src/iarc/src/task/task_node.cpp",
+		"/home/zby/uav_slam_ws/src/rm_uav/rm_challenge_fsm.h",
+		"/home/zby/uav_slam_ws/src/rm_uav/rm_challenge_fsm.cpp",
+		"/home/zby/uav_slam_ws/src/rm_uav/rm_uav_challenge.cpp",
+		"/home/zby/src/iarc/CMakeLists.txt",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/CMakeLists.txt",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/parameters.txt",
+		"/home/zby/src/RMUAV/CMakeLists.txt",
+		"/home/zby/Downloads/opencv-2.4.13.2/samples/cpp/kmeans.cpp",
+		"/home/zby/src/RMUAV/kmeans.cpp",
+		"/home/zby/Downloads/Line.py",
+		"/home/zby/.config/sublime-text-3/Packages/Clang Format/clang_format_custom.sublime-settings",
+		"/home/zby/.config/sublime-text-3/Packages/User/clang_format_custom.sublime-settings",
+		"/home/zby/.config/sublime-text-3/Packages/Clang Format/clang_format.sublime-settings",
+		"/home/zby/catkin_ws/src/ardrone_autonomy/src/ardrone_driver.cpp",
+		"/home/zby/catkin_ws/src/ardrone_autonomy/include/ardrone_autonomy/ardrone_driver.h",
+		"/home/zby/catkin_ws/src/ardrone_autonomy/include/ardrone_autonomy/ardrone_sdk.h",
+		"/home/zby/catkin_ws/src/ardrone_autonomy/src/ardrone_sdk.cpp",
+		"/home/zby/catkin_ws/src/ardrone_autonomy/src/teleop_twist.cpp",
+		"/home/zby/catkin_ws/src/ardrone_autonomy/src/video.cpp",
+		"/home/zby/catkin_ws/src/ardrone_autonomy/src/ardrone_driver.sublime-workspace",
+		"/home/zby/src/pcl_tutorial/pcl_visualizer_demo.cpp",
+		"/home/zby/src/pcl_tutorial/CMakeLists.txt",
+		"/home/zby/src/RMUAV/main.cpp",
+		"/home/zby/src/RMUAV/main1.cpp",
+		"/home/zby/src/RMUAV/main2.cpp",
+		"/home/zby/src/RMUAV/main (复件).cpp",
+		"/home/zby/src/octomap-qt5-support/octomap/share/octomap-example/CMakeLists.txt",
+		"/media/zby/files/ATSJTU/MyTask.txt",
+		"/home/zby/桌面/task",
+		"/home/zby/桌面/MyTask",
+		"/home/zby/src/octomap-qt5-support/octomap/src/simple_example.cpp",
+		"/home/zby/catkin_ws/src/ardrone_pc/src/play_ball_send.cpp",
+		"/home/zby/.config/sublime-text-3/Packages/User/Default (Linux).sublime-keymap",
+		"/home/zby/.config/sublime-text-3/Packages/CMakeEditor/Default.sublime-keymap",
+		"/home/zby/src/octomap/README.md",
+		"/home/zby/Downloads/opencv-2.4.13/CMakeLists.txt",
+		"/home/zby/Downloads/opencv-2.4.13.2/CMakeLists.txt",
+		"/home/zby/Downloads/opencv-2.4.13.2/README.md",
+		"/home/zby/catkin_ws/src/ardrone_pc/CMakeLists.txt",
+		"/usr/include/opencv2/highgui/highgui.hpp",
+		"/opt/ros/indigo/include/ros/node_handle.h",
+		"/home/zby/SJTU_UBUNTU/qt_PROJECT/VisualOdometry/src/main.cpp",
+		"/home/zby/src/g2o/README.md",
+		"/home/zby/.config/sublime-text-3/Packages/User/SublimeClang.sublime-settings",
+		"/home/zby/SJTU_UBUNTU/qt_PROJECT/VisualOdometry/CMakeLists.txt",
+		"/home/zby/uav_slam/rgbd_slam/CMakeLists.txt",
+		"/home/zby/uav_rgbd_slam/rgbd_slam/src/rgbd_slam.cpp",
+		"/home/zby/uav_rgbd_slam/rgbd_slam/CMakeLists.txt",
+		"/home/zby/uav_rgbd_slam/rgbd_slam/src/rgbd_slam",
+		"/home/zby/桌面/untitled.cpp",
+		"/home/zby/.config/sublime-text-3/Packages/SublimeClang/untitled.cpp",
+		"/home/zby/桌面/hhh",
+		"/home/zby/.config/sublime-text-3/Packages/ClangAutoComplete/ClangAutoComplete.sublime-settings",
+		"/home/zby/.config/sublime-text-3/Packages/User/clang_format.sublime-settings",
+		"/home/zby/.config/sublime-text-3/Packages/Clang Format/Default (Linux).sublime-keymap"
+	],
+	"find":
+	{
+		"height": 56.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"  \n",
+			"conversion_mat_",
+			"img_scaled_8u",
+			"max_range_double_spin_box",
+			"max",
+			"rgb_image",
+			"rgbImageCallback",
+			"depthImageCallback",
+			"pcl::",
+			"guidance_callback",
+			"vision_callback",
+			"normal_name",
+			"cloud_name",
+			"normal_name",
+			"cloud_name",
+			"normal_name",
+			"cluster_id",
+			"normals",
+			"distinct_normal_indices",
+			"distinct_normal_indice",
+			"dot_product",
+			"cloud",
+			"frontier",
+			"visualization",
+			"labels",
+			"centers",
+			"clusterCount",
+			"labels",
+			"namespace",
+			"namspace",
+			"centers",
+			"filtered_frontier",
+			"new",
+			"ardrone_tool_shutdown",
+			"main",
+			"boost::",
+			"pointT",
+			"cloudNormals",
+			"getdata",
+			"save",
+			"image2p",
+			"PointT",
+			"image2PointCloud",
+			"qdebug",
+			"camera",
+			"findhero",
+			"findcircle",
+			"findred",
+			"qDebug",
+			"result",
+			"checkkeyframe",
+			"check_result",
+			"FRAME",
+			"cvMat2Eigen",
+			" tvec",
+			"RESULT_of_pnp",
+			"globalOutput",
+			"localOutput",
+			"size_t",
+			"++;",
+			"frameToMap",
+			"output",
+			"newCloud",
+			"output",
+			"checkkeyframe",
+			"checkKeyframes",
+			"newCloud",
+			"occupancy",
+			"frames",
+			"tmp",
+			"parameterreader",
+			"true",
+			"completion",
+			"tmp",
+			"callba",
+			"eigen",
+			"image2PointCloud",
+			"readframe",
+			"catkin_pack",
+			"13",
+			"complet",
+			"rgbImageCallback",
+			"depthImageCallback",
+			"cloud",
+			"CHECKKEYFRAME",
+			"estimatemotion",
+			"estima",
+			"readframe",
+			"computekeypoint",
+			"checkkeyframe",
+			"true",
+			"estimatemotion",
+			"estima",
+			"computemotion",
+			"compute",
+			"detector",
+			"~",
+			"./",
+			"getDefaultCamera",
+			"ParameterReader",
+			"getDefaultCamera",
+			"Parameter",
+			"parameter",
+			"class",
+			"rese",
+			"pcdfile",
+			"pcl::io::savePCDFile",
+			"computeKeyPointsAndDesp",
+			"computeKeyPointAndDesp",
+			".rgb",
+			"rgb",
+			"rg",
+			"rgb",
+			"bgr",
+			"computeKeyPointsAndDesp",
+			"omputeKeyPointsAndDesp",
+			" keyframe_threshold",
+			"detector",
+			" startIndex ",
+			"lastframe",
+			"frame",
+			"good_match",
+			"camera",
+			"getdefaultcamera",
+			"norm",
+			"currindex ",
+			"vertexidmap",
+			"color"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "read_frame.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2693,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1423,
+								1423
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2
+						},
+						"translation.x": 0.0,
+						"translation.y": 720.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/home/zby/uav_slam_ws/src/rqt_image_view/src/rqt_image_view/image_view.ui",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6866,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/home/zby/uav_slam_ws/src/rgbd_slam/CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7917,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6714,
+								6714
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CMakeEditor/CMakeEditor.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 4020.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "rgbd_slam.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 42117,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6445,
+								6445
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 540.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 4,
+					"file": "/home/zby/uav_slam_ws/src/rqt_image_view/src/rqt_image_view/image_view.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15931,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								15394,
+								15394
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 7933.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 36.0
+	},
+	"input":
+	{
+		"height": 34.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.520443329765,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.clang":
+	{
+		"height": 84.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 101.0
+	},
+	"pinned_build_system": "",
+	"project": "rgbd_slam.sublime-project",
+	"replace":
+	{
+		"height": 66.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 147.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

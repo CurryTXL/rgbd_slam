@@ -3,9 +3,6 @@
 	[
 		{
 			"path": "/home/zby/uav_slam_ws/src/rgbd_slam"
-		},
-		{
-			"path": "/home/zby/uav_slam_ws/src/rqt_image_view"
 		}
 	],
 	"settings":

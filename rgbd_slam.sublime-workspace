@@ -4,16 +4,108 @@
 		"selected_items":
 		[
 			[
+				"ROS_INFO",
+				"ROS_INFO_STREAM(args)\tmacro"
+			],
+			[
+				"convert",
+				"converting"
+			],
+			[
+				"up",
+				"updateFrontierPoints()\tvoid"
+			],
+			[
+				"sa",
+				"savePointCloudMap(PointCloud::Ptr pointcloud, std::string filename)\tvoid"
+			],
+			[
+				"end",
+				"end_index\tint"
+			],
+			[
+				"param",
+				"parameter_reader\tParameterReader"
+			],
+			[
+				"par",
+				"parameter_reader\tParameterReader"
+			],
+			[
+				"color",
+				"ColorOcTree(double resolution)\tconstructor"
+			],
+			[
+				"m_glo",
+				"m_global_optimizer\tg2o::SparseOptimizer"
+			],
+			[
+				"opti",
+				"m_optimization_frames_number"
+			],
+			[
+				"chec",
+				"m_check_loop_closure"
+			],
+			[
+				"c",
+				"c_str() const\tconst char *"
+			],
+			[
+				"m_ke",
+				"m_keyframe_threshold\tdouble"
+			],
+			[
+				"m_",
+				"m_camera\trgbd::CAMERA_INTRINSIC_PARAMETERS"
+			],
+			[
+				"m_de",
+				"m_detector\tstring"
+			],
+			[
+				"vis",
+				"visualizeNormalsAndCloud(vector<pcl::PointCloud<pcl::Normal>::Ptr> final_cluster_normals, vector<pcl::PointCloud<PointT>::Ptr> final_cluster_cloud)\tvoid"
+			],
+			[
+				"filter",
+				"filterUpAndDownwardNormals(pcl::PointCloud<pcl::Normal>::Ptr froniter_normals, pcl::PointCloud<PointT>::Ptr frontier_cloud, pcl::PointCloud<pcl::Normal>::Ptr filtered_normals, pcl::PointCloud<PointT>::Ptr filtered_cloud)\tvoid"
+			],
+			[
+				"ma",
+				"main\tmain()"
+			],
+			[
+				"Oc",
+				"ColorOcTree\tclass"
+			],
+			[
+				"filtered_",
+				"filtered_frontier\tpcl::PointCloud<PointT>::Ptr"
+			],
+			[
+				"upda",
+				"updateOctreeMap()\tvoid"
+			],
+			[
+				"map",
+				"mapNeedToUpdate()\tbool"
+			],
+			[
+				"m_go",
+				"m_global_optimizer\tg2o::SparseOptimizer"
+			],
+			[
+				"res",
+				"result\trgbd::CHECK_RESULT"
+			],
+			[
 				"for",
 				"for\tFor Loop"
 			],
 			[
 				"p",
 				"point3d\ttypedef"
-			],
-			[
-				"ma",
-				"Matrix2f\ttypedef"
 			],
 			[
 				"tes",
@@ -32,10 +124,6 @@
 				"timer_callback"
 			],
 			[
-				"vis",
-				"vision_callback"
-			],
-			[
 				"gui",
 				"guidance_callback"
 			],
@@ -50,10 +138,6 @@
 			[
 				"add",
 				"add_executable"
-			],
-			[
-				"filter",
-				"filtered_normals"
 			],
 			[
 				"cloud",
@@ -232,10 +316,6 @@
 				"extractColor"
 			],
 			[
-				"color",
-				"colorRegion"
-			],
-			[
 				"region",
 				"region2"
 			],
@@ -272,10 +352,6 @@
 				"optiThre"
 			],
 			[
-				"opti",
-				"optiTime"
-			],
-			[
 				"cop",
 				"copyTo"
 			],
@@ -290,10 +366,6 @@
 			[
 				"test",
 				"testPoint"
-			],
-			[
-				"end",
-				"endl"
 			],
 			[
 				"std",
@@ -326,10 +398,6 @@
 			[
 				"Vox",
 				"VoxelGrid"
-			],
-			[
-				"c",
-				"c_str"
 			],
 			[
 				"pu",
@@ -400,10 +468,6 @@
 				"G2O_INCLUDE_DIR"
 			],
 			[
-				"ROS_INFO",
-				"ROS_INFO(...)\tmacro"
-			],
-			[
 				"rg",
 				"rgbd_slam"
 			],
@@ -420,10 +484,49 @@
 	"buffers":
 	[
 		{
-			"file": "rgbd_slam.cpp",
+			"contents": "#include \"drone_explorer.h\"\n\nDroneExplorer::DroneExplorer()\n{\n}\n\nvoid DroneExplorer::setStartIndex(int n)\n{\n  m_start_index= n;\n}\n\nvoid DroneExplorer::computeKeyPointsAndDesp(rgbd::FRAME &frame)\n{\n  rgbd::computeKeyPointsAndDesp(frame, m_detector, m_descriptor);\n}\n\nvoid DroneExplorer::initialize()\n{\n  /*initialize parameter*/\n  m_detector= m_parameter_reader.getData(\"detector\");\n  m_descriptor= m_parameter_reader.getData(\"descriptor\");\n  m_camera= rgbd::getDefaultCamera();\n  m_keyframe_threshold=\n      atof(m_parameter_reader.getData(\"keyframe_threshold\").c_str());\n  m_check_loop_closure= m_parameter_reader.getData(\n                            \"check_loop_closure\") == string(\"yes\");\n  m_optimization_frames_number=\n      atoi(m_parameter_reader.getData(\"optimization_frames_number\")\n               .c_str());\n  m_tree_resolution=\n      atof(m_parameter_reader.getData(\"tree_resolution\").c_str());\n  m_neighbor_radius=\n      atof(m_parameter_reader.getData(\"neighbor_radius\").c_str());\n  m_gridsize= atof(m_parameter_reader.getData(\"voxel_grid\").c_str());\n  m_mean_k= atoi(m_parameter_reader.getData(\"mean_k\").c_str());\n  m_std_dev= atof(m_parameter_reader.getData(\"std_dev\").c_str());\n\n  /*initialize point cloud filters*/\n  m_voxel_filter.setLeafSize(m_gridsize, m_gridsize, m_gridsize);\n\n  m_grid_filter.setFilterFieldName(\"z\");\n  m_grid_filter.setFilterLimits(0.0, 4.0);\n\n  m_outliers_filters.setMeanK(m_mean_k);\n  m_outliers_filters.setStddevMulThresh(m_std_dev);\n\n  /*initialize global map*/\n  m_global_pointcloud=\n      pcl::PointCloud<PointT>::Ptr(new pcl::PointCloud<PointT>);\n  m_global_octree= new octomap::ColorOcTree(m_tree_resolution);\n\n  /*initialize g2o optimizer*/\n  SlamLinearSolver *linearSolver= new SlamLinearSolver();\n  linearSolver->setBlockOrdering(false);\n  SlamBlockSolver *blockSolver= new SlamBlockSolver(linearSolver);\n  g2o::OptimizationAlgorithmLevenberg *solver=\n      new g2o::OptimizationAlgorithmLevenberg(blockSolver);\n\n  m_global_optimizer.setAlgorithm(solver);\n  m_global_optimizer.setVerbose(false);\n\n  g2o::VertexSE3 *v= new g2o::VertexSE3();\n  v->setId(m_start_index);\n  v->setEstimate(Eigen::Isometry3d::Identity());\n  v->setFixed(true);\n  m_global_optimizer.addVertex(v);\n}\n\nvoid DroneExplorer::processNewFrame(rgbd::FRAME frame)\n{\n  rgbd::computeKeyPointsAndDesp(frame, m_detector, m_descriptor);\n\n  rgbd::CHECK_RESULT result= rgbd::checkKeyframes(\n      m_keyframes.back(), frame, m_global_optimizer);\n\n  if(result == KEYFRAME)\n  {\n    cout << \"This is a new keyframe\" << endl;\n    addNewKeyFrame(frame);\n\n    if(m_check_loop_closure)\n    {\n      rgbd::checkNearbyLoops(m_keyframes, frame, m_global_optimizer);\n      rgbd::checkRandomLoops(m_keyframes, frame, m_global_optimizer);\n    }\n\n    /*optimize when have enough new frame*/\n    if(mapNeedToUpdate())\n    {\n      optimizePoseGraph();\n      updateMap();\n    }\n  }\n}\n\nvoid DroneExplorer::addNewKeyFrame(rgbd::FRAME frame)\n{\n  m_keyframes.push_back(frame);\n  m_frames_to_be_map.push_back(frame);\n}\n\nbool DroneExplorer::mapNeedToUpdate()\n{\n  if(m_frames_to_be_map.size() > m_optimization_frames_number)\n    return true;\n  else\n    return false;\n}\n\nvoid DroneExplorer::optimizePoseGraph()\n{\n  cout << \"optimizing pose graph, vertices: \"\n       << m_global_optimizer.vertices().size() << endl;\n  m_global_optimizer.initializeOptimization();\n  m_global_optimizer.optimize(100);\n}\n\nvoid DroneExplorer::updateMap()\n{\n  PointCloud::Ptr local_pointcloud_map(new PointCloud());\n  PointCloud::Ptr transformed_pointcloud(new PointCloud());\n  // point cloud filtered\n  PointCloud::Ptr filtered_pointcloud(new PointCloud());\n  for(size_t i= 0; i < m_frames_to_be_map.size(); i++)\n  {\n    /*update point cloud map*/\n    g2o::VertexSE3 *vertex= dynamic_cast<g2o::VertexSE3 *>(\n        m_global_optimizer.vertex(m_frames_to_be_map[i].frameID));\n    Eigen::Isometry3d pose= vertex->estimate();\n    PointCloud::Ptr newCloud=\n        rgbd::image2PointCloud(m_frames_to_be_map[i].rgb,\n                               m_frames_to_be_map[i].depth, m_camera);\n\n    m_voxel_filter.setInputCloud(newCloud);\n    m_voxel_filter.filter(*filtered_pointcloud);\n    m_grid_filter.setInputCloud(filtered_pointcloud);\n    m_grid_filter.filter(*newCloud);\n\n    pcl::transformPointCloud(*newCloud, *transformed_pointcloud,\n                             pose.matrix());\n    *local_pointcloud_map+= *transformed_pointcloud;\n    transformed_pointcloud->clear();\n    newCloud->clear();\n    /*filter point cloud*/\n    m_voxel_filter.setInputCloud(local_pointcloud_map);\n    m_voxel_filter.filter(*filtered_pointcloud);\n    m_outliers_filters.setInputCloud(filtered_pointcloud);\n    m_outliers_filters.filter(*local_pointcloud_map);\n    /*add to global point cloud*/\n    *m_global_pointcloud+= *local_pointcloud_map;\n    cout << \"point cloud update done\" << endl;\n\n    /*update octree map*/\n    for(auto p : local_pointcloud_map->points)\n    {\n      // use  insertRay to update free points\n      point3d cp(m_frames_to_be_map.at(i).cameraPos[0],\n                 m_frames_to_be_map.at(i).cameraPos[1],\n                 m_frames_to_be_map.at(i).cameraPos[2]);\n      m_global_octree->insertRay(cp, octomap::point3d(p.x, p.y, p.z));\n    }\n    for(auto p : local_pointcloud_map->points)\n    {\n      // update occupied points\n      ColorOcTreeNode *node=\n          m_global_octree->search(point3d(p.x, p.y, p.z));\n      node->setLogOdds(2.2);\n    }\n    for(auto p : local_pointcloud_map->points)\n    {\n      m_global_octree->integrateNodeColor(p.x, p.y, p.z, p.r, p.g,\n                                          p.b);\n    }\n    m_global_octree->updateInnerOccupancy();\n    cout << \"octomap update done.\" << endl;\n    local_pointcloud_map->clear();\n  }\n  m_frames_to_be_map.clear();\n}\n\nvoid DroneExplorer::savePointCloudMap(std::string filename)\n{\n  pcl::io::savePCDFile(filename, *m_global_pointcloud);\n}\n\nvoid DroneExplorer::savePointCloudMap(PointCloud::Ptr pointcloud,\n                                      std::string filename)\n{\n  pcl::io::savePCDFile(filename, *pointcloud);\n}\n\nvoid DroneExplorer::saveOctreeMap(octomap::ColorOcTree tree,\n                                  std::string filename)\n{\n  tree.write(filename);\n}\n\nvoid DroneExplorer::saveOctreeMap(std::string filename)\n{\n  m_global_octree->write(filename);\n}\n\nvoid DroneExplorer::visualizeFrontier()\n{\n  for(int i= 0; i < m_current_frontiers.size(); i++)\n  {\n    point3d pt= m_current_frontiers.at(i);\n    m_global_octree->updateNode(pt, true);\n    m_global_octree->integrateNodeColor(pt.x(), pt.y(), pt.z(), 255,\n                                        255, 255);\n    m_global_octree->setNodeColor(pt.x(), pt.y(), pt.z(), 255, 255,\n                                  255);\n  }\n  m_global_octree->updateInnerOccupancy();\n}\n\nvoid DroneExplorer::visualizeCoordinateSystem()\n{\n  m_global_octree->updateNode(point3d(0, 0, 0), true);\n  m_global_octree->integrateNodeColor(0, 0, 0, 255, 255, 255);\n  for(int i= 1; i <= 20; i++)\n  {\n    m_global_octree->updateNode(point3d(m_tree_resolution * i, 0, 0),\n                                true);\n    m_global_octree->integrateNodeColor(m_tree_resolution * i, 0, 0,\n                                        255, 0, 0);\n    m_global_octree->updateNode(point3d(0, m_tree_resolution * i, 0),\n                                true);\n    m_global_octree->integrateNodeColor(0, m_tree_resolution * i, 0,\n                                        0, 255, 0);\n    m_global_octree->updateNode(point3d(0, 0, m_tree_resolution * i),\n                                true);\n    m_global_octree->integrateNodeColor(0, 0, m_tree_resolution * i,\n                                        0, 0, 255);\n  }\n  m_global_octree->updateInnerOccupancy();\n}\n\nvoid DroneExplorer::searchTargetFrontier()\n{\n  /*convert frontier to pcl point cloud*/\n  PointCloud::Ptr frontier_cloud= convertFrontierToPointCloud();\n\n  /*estimate normals*/\n  pcl::PointCloud<pcl::Normal>::Ptr frontier_normals=\n      estimateNormals(frontier_cloud);\n\n  /*filter some normals*/\n  pcl::PointCloud<pcl::Normal>::Ptr filtered_normals(\n      new pcl::PointCloud<pcl::Normal>);\n  pcl::PointCloud<PointT>::Ptr filtered_cloud(\n      new pcl::PointCloud<PointT>);\n  filterUpAndDownwardNormals(frontier_normals, frontier_cloud,\n                             filtered_normals, filtered_cloud);\n\n  /*cluster normals using kmeans*/\n  vector<pcl::PointCloud<pcl::Normal>::Ptr> final_cluster_normals;\n  vector<pcl::PointCloud<PointT>::Ptr> final_cluster_cloud;\n  clusterNormals(filtered_normals, filtered_cloud,\n                 final_cluster_normals, final_cluster_cloud);\n\n  /*visualize cloud and normals*/\n  visualizeNormalsAndCloud(final_cluster_normals,\n                           final_cluster_cloud);\n}\n\nvoid DroneExplorer::loadOctreeMap(std::string filename)\n{\n  AbstractOcTree *tree= AbstractOcTree::read(filename);\n  m_global_octree= dynamic_cast<ColorOcTree *>(tree);\n}\n\nvoid DroneExplorer::updateFrontierPoints()\n{\n  for(ColorOcTree::leaf_iterator it= m_global_octree->begin_leafs(),\n                                 end= m_global_octree->end_leafs();\n      it != end; ++it)\n  {\n    /*skip no-free points*/\n    double occupancy= it->getOccupancy();\n    if(occupancy > 0.75)\n      continue;\n    ROS_INFO_STREAM(\"free frontier points,\"<<m_tree_resolution);\n    point3d node= it.getCoordinate();\n    for(int i= -1; i <= 1; i++)\n    {\n      for(int j= -1; j <= 1; j++)\n      {\n        for(int k= -1; k <= 1; k++)\n        {\n          if(i == 0 && j == 0 && k == 0)\n            continue;\n          point3d pt(node.x() + i * m_tree_resolution,\n                     node.y() + j * m_tree_resolution,\n                     node.z() + k * m_tree_resolution);\n          ColorOcTreeNode *near_node= m_global_octree->search(pt);\n          if(near_node != NULL)\n          {\n          \tROS_INFO_STREAM(\"not a free neighbor \");\n          }\n          else\n          {\n            // add a frontier node\n            m_current_frontiers.push_back(pt);\n          }\n        }\n      }\n    }\n  }\n  ROS_INFO_STREAM(\n      \"current frontier size:\" << m_current_frontiers.size());\n}\n\n/*create point cloud from octomap frontier*/\nPointCloud::Ptr DroneExplorer::convertFrontierToPointCloud()\n{\n  ROS_INFO_STREAM(\"start converting frontier\");\n  PointCloud::Ptr frontier_cloud(new PointCloud);\n  for(int i= 0; i < m_current_frontiers.size(); i++)\n  {\n    point3d pt= m_current_frontiers.at(i);\n    PointT p;\n    p.x= pt.x();\n    p.y= pt.y();\n    p.z= pt.z();\n    p.r= p.g= p.g= 255;\n    frontier_cloud->points.push_back(p);\n    ROS_INFO_STREAM(\"convert frontier\");\n  }\n  frontier_cloud->height= 1;\n  frontier_cloud->width= frontier_cloud->points.size();\n  frontier_cloud->is_dense= false;\n\n  return frontier_cloud;\n}\n\n/*estimate normals using pcl */\npcl::PointCloud<pcl::Normal>::Ptr\nDroneExplorer::estimateNormals(PointCloud::Ptr frontier_cloud)\n{\n  pcl::NormalEstimation<PointT, pcl::Normal> normal_estimator;\n  normal_estimator.setInputCloud(frontier_cloud);\n\n  pcl::search::KdTree<PointT>::Ptr kdTree(\n      new pcl::search::KdTree<PointT>());\n  normal_estimator.setSearchMethod(kdTree);\n\n  pcl::PointCloud<pcl::Normal>::Ptr froniter_normals(\n      new pcl::PointCloud<pcl::Normal>);\n  /*Use all neighbors in a sphere of radius 50cm*/\n  normal_estimator.setRadiusSearch(m_neighbor_radius);\n  normal_estimator.compute(*froniter_normals);\n\n  return froniter_normals;\n}\n\n/*filter upward and downward normals*/\nvoid DroneExplorer::filterUpAndDownwardNormals(\n    pcl::PointCloud<pcl::Normal>::Ptr froniter_normals,\n    pcl::PointCloud<PointT>::Ptr frontier_cloud,\n    pcl::PointCloud<pcl::Normal>::Ptr filtered_normals,\n    pcl::PointCloud<PointT>::Ptr filtered_cloud)\n{\n  double unit_normal_z[3]= { 0, 1.0, 0 };\n  vector<int> normal_indices;\n  for(size_t i= 0; i < froniter_normals->size(); i++)\n  {\n    double dot_product=\n        unit_normal_z[0] * froniter_normals->at(i).normal_x +\n        unit_normal_z[1] * froniter_normals->at(i).normal_y +\n        unit_normal_z[2] * froniter_normals->at(i).normal_z;\n    if(fabs(dot_product) < 0.5)\n      normal_indices.push_back(i);\n  }\n\n  for(size_t i= 0; i < normal_indices.size(); i++)\n  {\n    filtered_normals->push_back(\n        froniter_normals->at(normal_indices.at(i)));\n    filtered_cloud->push_back(\n        frontier_cloud->at(normal_indices.at(i)));\n  }\n}\n\n/**use kmeans cluster to classify different surface*/\nvoid DroneExplorer::clusterNormals(\n    pcl::PointCloud<pcl::Normal>::Ptr filtered_normals,\n    pcl::PointCloud<PointT>::Ptr filtered_cloud,\n    vector<pcl::PointCloud<pcl::Normal>::Ptr> final_cluster_normals,\n    vector<pcl::PointCloud<PointT>::Ptr> final_cluster_cloud)\n{\n  int cluster_count= 4;\n  cv::Mat cv_filtered_normals(filtered_normals->size(), 3, CV_32F);\n  cv::Mat labels;\n  cv::Mat normal_centers;\n  for(size_t i= 0; i < filtered_normals->size(); i++)\n  {\n    ROS_INFO_STREAM(\"converting normal\" << i);\n    cv_filtered_normals.at<float>(i, 0)=\n        filtered_normals->at(i).normal_x;\n    cv_filtered_normals.at<float>(i, 1)=\n        filtered_normals->at(i).normal_y;\n    cv_filtered_normals.at<float>(i, 2)=\n        filtered_normals->at(i).normal_z;\n    ROS_INFO_STREAM(\n        \"normal \" << i << \"is \" << cv_filtered_normals.at<float>(i, 0)\n                  << \",\" << cv_filtered_normals.at<float>(i, 1) << \",\"\n                  << cv_filtered_normals.at<float>(i, 2));\n  }\n\n  cv::kmeans(\n      cv_filtered_normals, cluster_count, labels,\n      cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 10, 1.0),\n      5, cv::KMEANS_PP_CENTERS, normal_centers);\n  std::cout<<normal_centers<<endl;\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\n  /*4 clusters maybe to large, merge similar normal and cloud*/\n  ROS_INFO_STREAM(\"merge similar normals\");\n  vector<vector<int>> distinct_normal_indices;\n  vector<int> first_indice;\n  first_indice.push_back(0);\n  distinct_normal_indices.push_back(first_indice);\n  for(size_t i= 1; i < cluster_count; i++)\n  {\n    bool is_distinct= true;\n    for(size_t j= 0; j < distinct_normal_indices.size(); j++)\n    {\n      int id= distinct_normal_indices.at(j).at(0);\n      ROS_INFO_STREAM(\"id is\" << id);\n      double dot_product= normal_centers.at<float>(id, 0) *\n                              normal_centers.at<float>(i, 0) +\n                          normal_centers.at<float>(id, 1) *\n                              normal_centers.at<float>(i, 1) +\n                          normal_centers.at<float>(id, 2) *\n                              normal_centers.at<float>(i, 2);\n      if(dot_product > 0.7)\n      {\n        // a similar normal\n        distinct_normal_indices.at(j).push_back(i);\n        is_distinct= false;\n        break;\n      }\n      else\n      {\n        // a distintc normal,continue to compare with other\n      }\n    }\n    if(is_distinct)\n    {\n      vector<int> distinct_normal_indice;\n      distinct_normal_indice.push_back(i);\n      distinct_normal_indices.push_back(distinct_normal_indice);\n    }\n  }\n\n  /*seperate different groups of normals*/\n  for(size_t i= 0; i < distinct_normal_indices.size(); i++)\n  {\n    pcl::PointCloud<pcl::Normal>::Ptr normals_ptr(\n        new pcl::PointCloud<pcl::Normal>);\n    final_cluster_normals.push_back(normals_ptr);\n    pcl::PointCloud<PointT>::Ptr cloud_ptr(\n        new pcl::PointCloud<PointT>);\n    final_cluster_cloud.push_back(cloud_ptr);\n  }\n  for(size_t i= 0; i < filtered_normals->size(); i++)\n  {\n    int cluster_id= -1;\n    for(size_t j= 0; j < distinct_normal_indices.size(); j++)\n    {\n      bool is_member= false;\n      for(size_t k= 0; k < distinct_normal_indices.at(j).size(); k++)\n      {\n        if(labels.at<int>(i, 0) ==\n           distinct_normal_indices.at(j).at(k))\n        {\n          is_member= true;\n        }\n      }\n      if(is_member)\n      {\n        cluster_id= j;\n        break;\n      }\n    }\n    final_cluster_normals.at(cluster_id)\n        ->push_back(filtered_normals->at(i));\n    final_cluster_cloud.at(cluster_id)\n        ->push_back(filtered_cloud->at(i));\n  }\n}\n\n/**visualize cluster normal and cloud*/\nvoid DroneExplorer::visualizeNormalsAndCloud(\n    vector<pcl::PointCloud<pcl::Normal>::Ptr> final_cluster_normals,\n    vector<pcl::PointCloud<PointT>::Ptr> final_cluster_cloud)\n{\n  pcl::visualization::PCLVisualizer viewer(\"PCL Viewer\");\n  viewer.setBackgroundColor(0.0, 0.0, 0.0);\n  int rgb_array[4][3]= {\n    { 255, 0, 0 }, { 0, 255, 0 }, { 0, 0, 255 }, { 255, 255, 0 }\n  };\n  /*add different cluster of normals and cloud*/\n  for(size_t i= 0; i < final_cluster_normals.size(); i++)\n  {\n    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZRGB>\n        rgb_handler(final_cluster_cloud.at(i), rgb_array[i][0],\n                    rgb_array[i][1], rgb_array[i][2]);\n    viewer.addPointCloud<pcl::PointXYZRGB>(final_cluster_cloud.at(i),\n                                           rgb_handler, \"cloud\" + i);\n    viewer.setPointCloudRenderingProperties(\n        pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2,\n        \"cloud\" + i);\n    viewer.addPointCloudNormals<PointT, pcl::Normal>(\n        final_cluster_cloud.at(i), final_cluster_normals.at(i), 10,\n        0.2, \"normal\" + i);\n  }\n  viewer.addCoordinateSystem(1.0);\n\n  while(!viewer.wasStopped())\n  {\n    viewer.spinOnce();\n  }\n}\n",
+			"file": "src/drone_explorer.cpp",
+			"file_size": 17129,
+			"file_write_time": 131439993836150296,
 			"settings":
 			{
-				"buffer_size": 40875,
+				"buffer_size": 17190,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/main.cpp",
+			"settings":
+			{
+				"buffer_size": 1743,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "include/drone_explorer.h",
+			"settings":
+			{
+				"buffer_size": 2883,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/rgbd_slam.cpp",
+			"settings":
+			{
+				"buffer_size": 26820,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "parameters.txt",
+			"settings":
+			{
+				"buffer_size": 892,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -436,13 +539,13 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 311.0,
+		"height": 242.0,
 		"last_filter": "clang",
 		"selected_items":
 		[
 			[
 				"clang",
-				"Clang Format: Select Style"
+				"SublimeClang: Clear cache"
 			],
 			[
 				"Package Control: ",
@@ -494,13 +597,25 @@
 	},
 	"expanded_folders":
 	[
+		"/home/zby/uav_slam_ws/src/rgbd_slam",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/include",
 		"/home/zby/uav_slam_ws/src/rgbd_slam/src"
 	],
 	"file_history":
 	[
+		"/home/zby/uav_slam_ws/src/rgbd_slam/CMakeLists.txt",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/src/rgb_d_slam.cpp",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/include/rgb_d_slam.h",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/include/parameter_reader.h",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/include/drone_explorer.h",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/src/rgbd_slam.cpp",
+		"/home/zby/uav_slam_ws/build/catkin/catkin_generated/version/package.cmake",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/src/read_frame.cpp",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/src/drone_explorer",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/src/untitled.cpp",
+		"/home/zby/uav_slam_ws/src/rgbd_slam/rgbd_slam.cpp",
 		"/home/zby/uav_slam_ws/src/rgbd_slam/src/rgbd_slam.sublime-project",
 		"/usr/include/pcl-1.7/pcl/visualization/point_cloud_geometry_handlers.h",
-		"/home/zby/uav_slam_ws/src/rgbd_slam/src/rgbd_slam.cpp",
 		"/home/zby/uav_slam_ws/src/rm_uav/rm_uav.sublime-project",
 		"/home/zby/uav_slam_ws/src/rgbd_slam/src/backup",
 		"/usr/include/c++/4.8/bits/c++0x_warning.h",
@@ -518,7 +633,6 @@
 		"/home/zby/uav_slam_ws/src/rm_uav/rm_challenge_fsm.cpp",
 		"/home/zby/uav_slam_ws/src/rm_uav/rm_uav_challenge.cpp",
 		"/home/zby/src/iarc/CMakeLists.txt",
-		"/home/zby/uav_slam_ws/src/rgbd_slam/CMakeLists.txt",
 		"/home/zby/uav_slam_ws/src/rgbd_slam/parameters.txt",
 		"/home/zby/src/RMUAV/CMakeLists.txt",
 		"/home/zby/Downloads/opencv-2.4.13.2/samples/cpp/kmeans.cpp",
@@ -576,16 +690,93 @@
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 96.0,
 		"where_history":
 		[
+			"<current file>,/home/zby/uav_slam_ws/src/rgbd_slam",
+			"<current file>",
+			"<current file>,/home/zby/uav_slam_ws/src/rgbd_slam",
+			"<current file>"
 		]
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"initilize",
+			"m_tree_resolution",
+			"read",
+			"frontierCloud",
+			"setinputcloud",
+			"scene",
+			"computeKeyPointsAndDesp",
+			"taskmode",
+			"m_gloabl_pointcloud",
+			"rgbd_slam",
+			"end_index",
+			"frame",
+			"readframe",
+			"cloud",
+			"readframe",
+			"SlamLinearSolver",
+			"pd",
+			"globalOptimizer",
+			"getDefaultCamera",
+			"m_neighbor_radius",
+			"m_parameter_reader",
+			"filtered_cluster_normals",
+			"filtered_frontier",
+			"final_cloud",
+			"final_normals",
+			"filtered_frontier",
+			"filtered_normals",
+			"filtered_cloud",
+			"filtered_normals",
+			"frontier_cloud",
+			"froniter_normals",
+			"frontier_normals",
+			"froniter_normals",
+			"frontier_cloud",
+			"tree",
+			"pd",
+			"m_current_froniters",
+			"m_current_frontiers",
+			"m_current_froniters",
+			"m_current_frontiers",
+			"frontiers",
+			"m_global_octree",
+			"coloroctree",
+			"m_current_frontiers",
+			"m_current_froniters",
+			"froniter_normals",
+			"treeResolution",
+			"cloudNormals",
+			"normalEstimator",
+			"frontierCloud",
+			"filtered_normals",
+			"ct",
+			"m_current_frontiers",
+			"frontiers",
+			"nearNode",
+			"totalCount",
+			"pcf",
+			"pct",
+			"localOutput",
+			"m_global_optimizer",
+			"currFrame",
+			"frame",
+			"initilize",
+			"DroneExplorer",
+			"point3d_collection",
+			"CAMERA_INTRINSIC_PARAMETERS",
+			"ParameterReader",
+			"readFrame",
+			"pd",
+			"getdefa",
+			"image2poin",
+			"optiThre",
+			"frameToMap",
 			"pcl::",
 			"guidance_callback",
 			"vision_callback",
@@ -640,75 +831,7 @@
 			"++;",
 			"frameToMap",
 			"output",
-			"newCloud",
-			"output",
-			"checkkeyframe",
-			"checkKeyframes",
-			"newCloud",
-			"occupancy",
-			"frames",
-			"tmp",
-			"parameterreader",
-			"true",
-			"completion",
-			"tmp",
-			"callba",
-			"eigen",
-			"image2PointCloud",
-			"readframe",
-			"catkin_pack",
-			"13",
-			"complet",
-			"rgbImageCallback",
-			"depthImageCallback",
-			"cloud",
-			"CHECKKEYFRAME",
-			"estimatemotion",
-			"estima",
-			"readframe",
-			"computekeypoint",
-			"checkkeyframe",
-			"true",
-			"estimatemotion",
-			"estima",
-			"computemotion",
-			"compute",
-			"detector",
-			"~",
-			"./",
-			"getDefaultCamera",
-			"ParameterReader",
-			"getDefaultCamera",
-			"Parameter",
-			"parameter",
-			"class",
-			"rese",
-			"pcdfile",
-			"pcl::io::savePCDFile",
-			"computeKeyPointsAndDesp",
-			"computeKeyPointAndDesp",
-			".rgb",
-			"rgb",
-			"rg",
-			"rgb",
-			"bgr",
-			"computeKeyPointsAndDesp",
-			"omputeKeyPointsAndDesp",
-			" keyframe_threshold",
-			"detector",
-			" startIndex ",
-			"lastframe",
-			"frame",
-			"good_match",
-			"camera",
-			"getdefaultcamera",
-			"norm",
-			"currindex ",
-			"vertexidmap",
-			"color",
-			" computeKeyPointAndDesp",
-			"show",
-			"normofTransform"
+			"newCloud"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -716,11 +839,25 @@
 		"regex": false,
 		"replace_history":
 		[
+			"initialize",
+			"m_parameter_reader",
+			"filtered_cloud",
+			"m_tree_resolution",
+			"froniter_normals",
+			"normal_estimator",
+			"frontier_cloud",
+			"m_global_octree",
+			"near_node",
+			"filtered_pointcloud",
+			"transformed_pointcloud",
+			"local_pointcloud_map",
+			"optimization_frames_number",
+			"frames_to_be_map"
 		],
 		"reverse": false,
-		"show_context": true,
-		"use_buffer2": true,
-		"whole_word": false,
+		"show_context": false,
+		"use_buffer2": false,
+		"whole_word": true,
 		"wrap": true
 	},
 	"groups":
@@ -731,19 +868,76 @@
 			[
 				{
 					"buffer": 0,
-					"file": "rgbd_slam.cpp",
+					"file": "src/drone_explorer.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 40875,
+						"buffer_size": 17190,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								17184,
-								17184
+								13608,
+								13608
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 638.0,
+						"translation.y": 7965.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/main.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1743,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1038,
+								1038
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 120.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "include/drone_explorer.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2883,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
 							]
 						],
 						"settings":
@@ -753,10 +947,74 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 8238.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 3,
+					"file": "src/rgbd_slam.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 26820,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								11286,
+								11286
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 5701.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "parameters.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 892,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								642,
+								642
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 725.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -779,11 +1037,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.532585371574,
 			1.0
 		],
 		"rows":
@@ -799,7 +1064,7 @@
 	},
 	"output.find_results":
 	{
-		"height": 0.0
+		"height": 130.0
 	},
 	"output.unsaved_changes":
 	{
@@ -846,8 +1111,8 @@
 	"show_minimap": false,
 	"show_open_files": true,
 	"show_tabs": true,
-	"side_bar_visible": true,
-	"side_bar_width": 147.0,
+	"side_bar_visible": false,
+	"side_bar_width": 145.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

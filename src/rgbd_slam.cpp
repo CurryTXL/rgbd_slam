@@ -16,57 +16,11 @@
 #define BOLDMAGENTA "\033[1m\033[35m" /* Bold Magenta */
 #define BOLDCYAN "\033[1m\033[36m"    /* Bold Cyan */
 #define BOLDWHITE "\033[1m\033[37m"   /* Bold White */
-// C++标准库
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <vector>
-using namespace std;
-// g2o
-#include <g2o/core/block_solver.h>
-#include <g2o/core/factory.h>
-#include <g2o/core/optimization_algorithm_factory.h>
-#include <g2o/core/optimization_algorithm_gauss_newton.h>
-#include <g2o/core/optimization_algorithm_levenberg.h>
-#include <g2o/core/robust_kernel.h>
-#include <g2o/core/robust_kernel_impl.h>
-#include <g2o/core/sparse_optimizer.h>
-#include <g2o/solvers/eigen/linear_solver_eigen.h>
-#include <g2o/types/slam3d/types_slam3d.h>
-// Eigen
-#include <Eigen/Core>
-#include <Eigen/Geometry>
-// OpenCV
-#include <opencv2/calib3d/calib3d.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/core/eigen.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/nonfree/nonfree.hpp>
-// #include <opencv2/xfeatures2d.hpp>
-#include "opencv2/imgproc/imgproc.hpp"
-#include <opencv2/features2d/features2d.hpp>
-// PCL
-#include <pcl/common/transforms.h>
-#include <pcl/features/normal_3d.h>
-#include <pcl/filters/passthrough.h>
-#include <pcl/filters/statistical_outlier_removal.h>
-#include <pcl/filters/voxel_grid.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/point_types.h>
-#include <pcl/visualization/cloud_viewer.h>
-// octomap
-#include <octomap/ColorOcTree.h>
-#include <octomap/octomap.h>
-using namespace octomap;
-// ros
-#include <cv_bridge/cv_bridge.h>
-#include <geometry_msgs/Twist.h>
-#include <image_transport/image_transport.h>
-#include <ros/ros.h>
-#include <sensor_msgs/image_encodings.h>
-#include <std_msgs/Empty.h>
-#include <std_msgs/Int16.h>
+
+#include "rgb_d_slam.h"
+#include "parameter_reader.h"
+using namespace rgbd;
+
 // note://///////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////
@@ -81,75 +35,7 @@ cv::Mat g_depth_image;
 
 ***********************************************************/
 int taskMode= 0;  ///<  0 : visual odometry, 1 use octomap
-typedef pcl::PointXYZRGB PointT;
-typedef pcl::PointCloud<PointT> PointCloud;
-class ParameterReader
-{
-public:
-  ParameterReader(string filename= "/home/zby/uav_slam_ws/src/"
-                                   "rgbd_slam/parameters.txt")
-  {
-    ifstream fin(filename.c_str());
-    if(!fin)
-    {
-      cerr << "parameter file does not exist." << endl;
-      return;
-    }
-    while(!fin.eof())
-    {
-      string str;
-      getline(fin, str);
-      if(str[0] == '#')
-      {
-        // 以‘＃’开头的是注释
-        continue;
-      }
 
-      int pos= str.find("=");
-      if(pos == -1)
-        continue;
-      string key= str.substr(0, pos);
-      string value= str.substr(pos + 1, str.length());
-      data[key]= value;
-
-      if(!fin.good())
-        break;
-    }
-  }
-  string getData(string key)
-  {
-    map<string, string>::iterator iter= data.find(key);
-    if(iter == data.end())
-    {
-      cerr << "Parameter name " << key << " not found!" << endl;
-      return string("NOT_FOUND");
-    }
-    return iter->second;
-  }
-
-public:
-  map<string, string> data;
-};
-/**相机内参结构*/
-struct CAMERA_INTRINSIC_PARAMETERS
-{
-  double cx, cy, fx, fy, scale;
-};
-// 帧结构
-struct FRAME
-{
-  int frameID;
-  cv::Mat rgb, depth;       //该帧对应的彩色图与深度图
-  cv::Mat desp;             //特征描述子
-  vector<cv::KeyPoint> kp;  //关键点
-  double cameraPos[3];
-};
-// PnP 结果
-struct RESULT_OF_PNP
-{
-  cv::Mat rvec, tvec;
-  int inliers;
-};
 // 把g2o的定义放到前面
 typedef g2o::BlockSolver_6_3 SlamBlockSolver;
 typedef g2o::LinearSolverEigen<SlamBlockSolver::PoseMatrixType>
@@ -159,59 +45,7 @@ typedef g2o::LinearSolverEigen<SlamBlockSolver::PoseMatrixType>
     function  definition
 
 ******************************************************/
-// 给定index，读取一帧数据
-FRAME
-readFrame(int index, ParameterReader &pd);
-/**估计一个运动的大小
-* @param rvec rotation vector
-* @param tvec translation vector
-* @return a value represent how far the
-*   motion is
-*/
-double normofTransform(cv::Mat rvec, cv::Mat tvec);
-// 检测两个帧，结果定义
-enum CHECK_RESULT
-{
-  NOT_MATCHED= 0,
-  TOO_FAR_AWAY,
-  TOO_CLOSE,
-  KEYFRAME
-};
-//检查是否为关键帧
-CHECK_RESULT
-checkKeyframes(FRAME &f1, FRAME &f2, g2o::SparseOptimizer &opti,
-               bool is_loops= false);
-// 检测近距离的回环
-void checkNearbyLoops(vector<FRAME> &frames, FRAME &currFrame,
-                      g2o::SparseOptimizer &opti);
-// 随机检测回环
-void checkRandomLoops(vector<FRAME> &frames, FRAME &currFrame,
-                      g2o::SparseOptimizer &opti);
-// 函数接口
-// image2PonitCloud 将rgb图转换为点云
-PointCloud::Ptr image2PointCloud(cv::Mat &rgb, cv::Mat &depth,
-                                 CAMERA_INTRINSIC_PARAMETERS &camera);
-// point2dTo3d 将单个点从图像坐标转换为空间坐标
-// input: 3维点Point3f (u,v,d)
-cv::Point3f point2dTo3d(cv::Point3f &point,
-                        CAMERA_INTRINSIC_PARAMETERS &camera);
-// computeKeyPointsAndDesp 同时提取关键点与特征描述子
-void computeKeyPointsAndDesp(FRAME &frame, string detector,
-                             string descriptor);
-// estimateMotion 计算两个帧之间的运动
-// 输入：帧1和帧2, 相机内参
-RESULT_OF_PNP
-estimateMotion(FRAME &frame1, FRAME &frame2,
-               CAMERA_INTRINSIC_PARAMETERS &camera);
-// cvMat2Eigen
-Eigen::Isometry3d cvMat2Eigen(cv::Mat &rvec, cv::Mat &tvec);
-// joinPointCloud
-PointCloud::Ptr joinPointCloud(PointCloud::Ptr original,
-                               FRAME &newFrame, Eigen::Isometry3d T,
-                               CAMERA_INTRINSIC_PARAMETERS &camera);
-// get camera intristic parameter
-CAMERA_INTRINSIC_PARAMETERS
-getDefaultCamera();
+
 // rgb and depth image callback
 void rgbImageCallback(const sensor_msgs::Image::ConstPtr msg);
 void depthImageCallback(const sensor_msgs::Image::ConstPtr msg);
@@ -237,18 +71,6 @@ int main(int argc, char **argv)
   depth_image_sub= image_transport.subscribe("/camera/depth/image", 1,
                                              depthImageCallback);
 
-  /*create windows to show rgb and depth image*/
-  cv::namedWindow("rgb_image");
-  cv::namedWindow("depth_image");
-  /*begin main loop, read image*/
-  while(ros::ok())
-  {
-    ros::spinOnce();
-    cv::imshow("rgb_image", g_rgb_image);
-    cv::imshow("depth_image", g_depth_image);
-  }
-  return 0;
-
   /*read parameter*/
   ParameterReader pd;
   taskMode= atoi(pd.getData("task_mode").c_str());
@@ -259,7 +81,7 @@ int main(int argc, char **argv)
     int startIndex= atoi(pd.getData("start_index").c_str());
     int endIndex= atoi(pd.getData("end_index").c_str());
     vector<FRAME> keyframes; /*keyframe*/
-    vector<FRAME> frameToMap;
+    vector<FRAME> frames_to_be_map;
     /*initialize the first frame*/
     cout << "Initializing ..." << endl;
     int currIndex= startIndex;  // 当前索引为currIndex
@@ -277,18 +99,17 @@ int main(int argc, char **argv)
         image2PointCloud(currFrame.rgb, currFrame.depth, camera);
 
     // 有关g2o的初始化
-    // 初始化求解器
+    /* 初始化求解器*/
     SlamLinearSolver *linearSolver= new SlamLinearSolver();
     linearSolver->setBlockOrdering(false);
     SlamBlockSolver *blockSolver= new SlamBlockSolver(linearSolver);
     g2o::OptimizationAlgorithmLevenberg *solver=
         new g2o::OptimizationAlgorithmLevenberg(blockSolver);
-
     g2o::SparseOptimizer globalOptimizer;  // 最后用的就是这个东东
     globalOptimizer.setAlgorithm(solver);
     globalOptimizer.setVerbose(false);  // 不要输出调试信息
 
-    // 向globalOptimizer增加第一个顶点
+    /*向globalOptimizer增加第一个顶点*/
     g2o::VertexSE3 *v= new g2o::VertexSE3();
     v->setId(currIndex);
     v->setEstimate(Eigen::Isometry3d::Identity());  //估计为单位矩阵
@@ -296,44 +117,50 @@ int main(int argc, char **argv)
     globalOptimizer.addVertex(v);
 
     keyframes.push_back(currFrame);
-    frameToMap.push_back(currFrame);
+    frames_to_be_map.push_back(currFrame);
 
+    /*initialze slam parameters*/
     double keyframe_threshold=
         atof(pd.getData("keyframe_threshold").c_str());
     bool check_loop_closure=
         pd.getData("check_loop_closure") == string("yes");
+    const int optimization_frames_number=
+        10;  // optimize every 10 frames
 
-    const int optiThre= 10;  // optimize every 10 frames
-    pcl::VoxelGrid<PointT> voxel;  // 网格滤波器，调整地图分辨率
-    double gridsize=
-        atof(pd.getData("voxel_grid")
-                 .c_str());  //分辨图可以在parameters.txt里调
+    /*initialize point cloud filters*/
+    /*网格滤波器，调整地图分辨率*/
+    pcl::VoxelGrid<PointT> voxel;
+    double gridsize= atof(pd.getData("voxel_grid").c_str());
     voxel.setLeafSize(gridsize, gridsize, gridsize);
-    pcl::PassThrough<PointT>
-        pass;  //由于rgbd相机的有效深度区间有限，把太远的去掉
+    /*由于rgbd相机的有效深度区间有限，把太远的去掉,4m以上就不要了*/
+    pcl::PassThrough<PointT> pass;
     pass.setFilterFieldName("z");
-    pass.setFilterLimits(0.0, 4.0);  // 4m以上就不要了
-    pcl::StatisticalOutlierRemoval<PointT>
-        outlierRemoval;  // outliers removal
+    pass.setFilterLimits(0.0, 4.0);
+    /* outliers removal*/
+    pcl::StatisticalOutlierRemoval<PointT> outlierRemoval;
     int meanK= atoi(pd.getData("mean_k").c_str());
     float stdDev= atof(pd.getData("std_dev").c_str());
     outlierRemoval.setMeanK(meanK);
     outlierRemoval.setStddevMulThresh(stdDev);
+
+    /*initialze global point cloud map and octomap*/
     PointCloud::Ptr globalOutput(new PointCloud());  //全局地图
     double treeResolution=
         atof(pd.getData("tree_resolution").c_str());
     octomap::ColorOcTree tree(treeResolution);  // global octomap
+
+    /*localizing and mapping for dataset*/
     for(currIndex= startIndex + 1; currIndex < endIndex && ros::ok();
         currIndex++)
     {
       cout << "Reading files " << currIndex << endl;
-      FRAME currFrame= readFrame(currIndex, pd);  // 读取currFrame
-      computeKeyPointsAndDesp(currFrame, detector,
-                              descriptor);  //提取特征
-      CHECK_RESULT result= checkKeyframes(
-          keyframes.back(), currFrame,
-          globalOptimizer);  //匹配该帧与keyframes里最后一帧
-      switch(result)  // 根据匹配结果不同采取不同策略
+      FRAME currFrame= readFrame(currIndex, pd);
+      computeKeyPointsAndDesp(currFrame, detector, descriptor);
+      //匹配该帧与keyframes里最后一帧
+      CHECK_RESULT result= checkKeyframes(keyframes.back(), currFrame,
+                                          globalOptimizer);
+      // 根据匹配结果不同采取不同策略
+      switch(result)
       {
         case NOT_MATCHED:
           //没匹配上，直接跳过
@@ -356,9 +183,10 @@ int main(int argc, char **argv)
             checkRandomLoops(keyframes, currFrame, globalOptimizer);
           }
           keyframes.push_back(currFrame);
-          frameToMap.push_back(currFrame);
-          // optimize when enough frame accumulate
-          if(frameToMap.size() > optiThre)
+          frames_to_be_map.push_back(currFrame);
+
+          /*optimize when have enough new frame*/
+          if(frames_to_be_map.size() > optimization_frames_number)
           {
             /*  add new points to map */
             cout << "Now add new points to map" << endl;
@@ -368,26 +196,27 @@ int main(int argc, char **argv)
             // globalOptimizer.save(
             // "/home/zby/uav_slam_ws/src/rgbd_slam/result_before.g2o");
             globalOptimizer.initializeOptimization();
-            globalOptimizer.optimize(100);  //可以指定优化步数
+            globalOptimizer.optimize(100);
             // globalOptimizer.save(
             // "~/uav_slam_ws/src/rgbd_slam/result_after.g2o" );
             cout << "Optimization done." << endl;
+
             /*拼接点云地图*/
             PointCloud::Ptr localOutput(new PointCloud());  //局部地图
-            PointCloud::Ptr pct(
-                new PointCloud());  // point cloud transformed
-            PointCloud::Ptr pcf(
-                new PointCloud());  // point cloud filtered
-            for(size_t i= 0; i < frameToMap.size(); i++)
+            // point cloud transformed
+            PointCloud::Ptr pct(new PointCloud());
+            // point cloud filtered
+            PointCloud::Ptr pcf(new PointCloud());
+            for(size_t i= 0; i < frames_to_be_map.size(); i++)
             {
-              /*从g2o里取出一帧*/
               g2o::VertexSE3 *vertex= dynamic_cast<g2o::VertexSE3 *>(
-                  globalOptimizer.vertex(frameToMap[i].frameID));
-              Eigen::Isometry3d pose=
-                  vertex->estimate();  //该帧优化后的位姿
-              PointCloud::Ptr newCloud= image2PointCloud(
-                  frameToMap[i].rgb, frameToMap[i].depth,
-                  camera);  //转成点云
+                  globalOptimizer.vertex(
+                      frames_to_be_map[i].frameID));
+              /*该帧优化后的位姿*/
+              Eigen::Isometry3d pose= vertex->estimate();
+              PointCloud::Ptr newCloud=
+                  image2PointCloud(frames_to_be_map[i].rgb,
+                                   frames_to_be_map[i].depth, camera);
               /*网格滤波，降采样*/
               voxel.setInputCloud(newCloud);
               voxel.filter(*pcf);
@@ -407,13 +236,14 @@ int main(int argc, char **argv)
               /*add to global point cloud*/
               *globalOutput+= *localOutput;
               cout << "point cloud update done" << endl;
+
               /*generate octomap*/
               for(auto p : localOutput->points)
               {
                 // use  insertRay to update free points
-                point3d cp(frameToMap.at(i).cameraPos[0],
-                           frameToMap.at(i).cameraPos[1],
-                           frameToMap.at(i).cameraPos[2]);
+                point3d cp(frames_to_be_map.at(i).cameraPos[0],
+                           frames_to_be_map.at(i).cameraPos[1],
+                           frames_to_be_map.at(i).cameraPos[2]);
                 tree.insertRay(cp, octomap::point3d(p.x, p.y, p.z));
               }
               for(auto p : localOutput->points)
@@ -436,7 +266,7 @@ int main(int argc, char **argv)
               cout << "octomap update done." << endl;
               localOutput->clear();
             }
-            frameToMap.clear();
+            frames_to_be_map.clear();
           }
           break;
         default:
@@ -611,7 +441,8 @@ get frontiers points' coordinate and calculate normals
     //                              ","
     //                              << cloudNormals->at(i).normal_z);
     // }
-    /**filter normals*/
+
+    /*filter normals*/
     double unit_normal_z[3]= { 0, 1.0, 0 };
     vector<int> normal_indices;
     for(size_t i= 0; i < cloudNormals->size(); i++)
@@ -627,13 +458,13 @@ get frontiers points' coordinate and calculate normals
     }
     pcl::PointCloud<pcl::Normal>::Ptr filtered_normals(
         new pcl::PointCloud<pcl::Normal>);
-    pcl::PointCloud<PointT>::Ptr filtered_frontier(
+    pcl::PointCloud<PointT>::Ptr filtered_cloud(
         new pcl::PointCloud<PointT>);
     for(size_t i= 0; i < normal_indices.size(); i++)
     {
       filtered_normals->push_back(
           cloudNormals->at(normal_indices.at(i)));
-      filtered_frontier->push_back(
+      filtered_cloud->push_back(
           frontierCloud->at(normal_indices.at(i)));
     }
     cout << "frontier points' size: " << frontierCloud->points.size()
@@ -641,7 +472,8 @@ get frontiers points' coordinate and calculate normals
     ROS_INFO_STREAM(
         "filtered_normals size is :" << filtered_normals->size());
     ROS_INFO_STREAM(
-        "filtered_frontier size is :" << filtered_frontier->size());
+        "filtered_cloud size is :" << filtered_cloud->size());
+
     /**use kmeans cluster to classify different surface*/
     int cluster_count= 4;
     cv::Mat cv_filtered_normals(filtered_normals->size(), 3, CV_32F);
@@ -709,7 +541,7 @@ get frontiers points' coordinate and calculate normals
         distinct_normal_indices.push_back(distinct_normal_indice);
       }
     }
-    for(size_t i= 0; i < distinct_normal_indices.size(); i++)
+    for(size_t` i= 0; i < distinct_normal_indices.size(); i++)
     {
       ROS_INFO_STREAM("cluster: " << i);
       for(size_t j= 0; j < distinct_normal_indices.at(i).size(); j++)
@@ -772,7 +604,7 @@ get frontiers points' coordinate and calculate normals
       final_cluster_normals.at(cluster_id)
           ->push_back(filtered_normals->at(i));
       final_cluster_cloud.at(cluster_id)
-          ->push_back(filtered_frontier->at(i));
+          ->push_back(filtered_cloud->at(i));
     }
     for(size_t i= 0; i < final_cluster_normals.size(); i++)
     {
@@ -783,6 +615,7 @@ get frontiers points' coordinate and calculate normals
                                        << final_cluster_cloud.at(i)
                                               ->size() << "points");
     }
+
     /**visualize cluster normal and cloud*/
     pcl::visualization::PCLVisualizer viewer("PCL Viewer");
     viewer.setBackgroundColor(0.0, 0.0, 0.0);
@@ -818,7 +651,7 @@ get frontiers points' coordinate and calculate normals
     viewer_o.setPointCloudRenderingProperties(
         pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "cloud");
     // viewer_o.addPointCloudNormals<PointT, pcl::Normal>(
-    //     filtered_frontier, filtered_normals, 10, 0.2, "normal");
+    //     filtered_cloud, filtered_normals, 10, 0.2, "normal");
     viewer_o.addCoordinateSystem(1.0);
     while(!viewer.wasStopped())
     {
@@ -827,390 +660,6 @@ get frontiers points' coordinate and calculate normals
   }
 
   return 0;
-}
-
-FRAME
-readFrame(int index, ParameterReader &pd)
-{
-  FRAME f;
-  string rgbDir= pd.getData("rgb_dir");
-  string depthDir= pd.getData("depth_dir");
-
-  string rgbExt= pd.getData("rgb_extension");
-  string depthExt= pd.getData("depth_extension");
-
-  stringstream ss;
-  ss << rgbDir << index << rgbExt;
-  string filename;
-  ss >> filename;
-  f.rgb= cv::imread(filename);
-
-  ss.clear();
-  filename.clear();
-  ss << depthDir << index << "_depth" << depthExt;
-  ss >> filename;
-
-  f.depth= cv::imread(filename, -1);
-  f.frameID= index;
-  return f;
-}
-
-double normofTransform(cv::Mat rvec, cv::Mat tvec)
-{
-  return fabs(min(cv::norm(rvec), 2 * M_PI - cv::norm(rvec))) +
-         fabs(cv::norm(tvec));
-}
-
-CHECK_RESULT
-checkKeyframes(FRAME &f1, FRAME &f2, g2o::SparseOptimizer &opti,
-               bool is_loops)
-{
-  static ParameterReader pd;
-  static int min_inliers= atoi(pd.getData("min_inliers").c_str());
-  static double max_norm= atof(pd.getData("max_norm").c_str());
-  static double keyframe_threshold=
-      atof(pd.getData("keyframe_threshold").c_str());
-  static double max_norm_lp= atof(pd.getData("max_norm_lp").c_str());
-  static CAMERA_INTRINSIC_PARAMETERS camera= getDefaultCamera();
-  // 比较f1 和 f2
-  RESULT_OF_PNP result= estimateMotion(f1, f2, camera);
-  if(result.inliers < min_inliers)  // inliers不够，放弃该帧
-    return NOT_MATCHED;
-  // 计算运动范围是否太大
-  double norm= normofTransform(result.rvec, result.tvec);
-  if(is_loops == false)
-  {
-    if(norm >= max_norm)
-      return TOO_FAR_AWAY;  // too far away, may be error
-  }
-  else
-  {
-    if(norm >= max_norm_lp)
-      return TOO_FAR_AWAY;
-  }
-
-  if(norm <= keyframe_threshold)
-    return TOO_CLOSE;  // too adjacent frame
-  // 向g2o中增加这个顶点与上一帧联系的边
-  // 顶点部分
-  // 顶点只需设定id即可
-  if(is_loops == false)
-  {
-    /*add new vertex to pose graph*/
-    g2o::VertexSE3 *v= new g2o::VertexSE3();
-    v->setId(f2.frameID);
-    v->setEstimate(Eigen::Isometry3d::Identity());
-    opti.addVertex(v);
-    /* add camera position to frame*/
-    f2.cameraPos[0]= result.tvec.at<double>(0, 0) + f1.cameraPos[0];
-    f2.cameraPos[1]= result.tvec.at<double>(1, 0) + f1.cameraPos[1];
-    f2.cameraPos[2]= result.tvec.at<double>(2, 0) + f1.cameraPos[2];
-  }
-  // 边部分
-  g2o::EdgeSE3 *edge= new g2o::EdgeSE3();
-  // 连接此边的两个顶点id
-  edge->setVertex(0, opti.vertex(f1.frameID));
-  edge->setVertex(1, opti.vertex(f2.frameID));
-  edge->setRobustKernel(new g2o::RobustKernelHuber());
-  // 信息矩阵
-  Eigen::Matrix<double, 6, 6> information=
-      Eigen::Matrix<double, 6, 6>::Identity();
-  // 信息矩阵是协方差矩阵的逆，表示我们对边的精度的预先估计
-  // 因为pose为6D的，信息矩阵是6*6的阵，假设位置
-  //和角度的估计精度均为0.1且互相独立
-  // 那么协方差则为对角为0.01的矩阵，信息阵则为100的矩阵
-  information(0, 0)= information(1, 1)= information(2, 2)= 100;
-  information(3, 3)= information(4, 4)= information(5, 5)= 100;
-  // 也可以将角度设大一些，表示对角度的估计更加准确
-  edge->setInformation(information);
-  // 边的估计即是pnp求解之结果
-  Eigen::Isometry3d T= cvMat2Eigen(result.rvec, result.tvec);
-  // edge->setMeasurement( T );
-  edge->setMeasurement(T.inverse());
-  // 将此边加入图中
-  opti.addEdge(edge);
-  return KEYFRAME;
-}
-
-void checkNearbyLoops(vector<FRAME> &frames, FRAME &currFrame,
-                      g2o::SparseOptimizer &opti)
-{
-  static ParameterReader pd;
-  static int nearby_loops= atoi(pd.getData("nearby_loops").c_str());
-
-  // 就是把currFrame和 frames里末尾几个测一遍
-  if(frames.size() <= nearby_loops)
-  {
-    // no enough keyframes, check everyone
-    for(size_t i= 0; i < frames.size(); i++)
-    {
-      checkKeyframes(frames[i], currFrame, opti, true);
-    }
-  }
-  else
-  {
-    // check the nearest ones
-    for(size_t i= frames.size() - nearby_loops; i < frames.size();
-        i++)
-    {
-      checkKeyframes(frames[i], currFrame, opti, true);
-    }
-  }
-}
-
-void checkRandomLoops(vector<FRAME> &frames, FRAME &currFrame,
-                      g2o::SparseOptimizer &opti)
-{
-  static ParameterReader pd;
-  static int random_loops= atoi(pd.getData("random_loops").c_str());
-  srand((unsigned int)time(NULL));
-  // 随机取一些帧进行检测
-
-  if(frames.size() <= random_loops)
-  {
-    // no enough keyframes, check everyone
-    for(size_t i= 0; i < frames.size(); i++)
-    {
-      checkKeyframes(frames[i], currFrame, opti, true);
-    }
-  }
-  else
-  {
-    // randomly check loops
-    for(int i= 0; i < random_loops; i++)
-    {
-      int index= rand() % frames.size();
-      checkKeyframes(frames[index], currFrame, opti, true);
-    }
-  }
-}
-
-PointCloud::Ptr image2PointCloud(cv::Mat &rgb, cv::Mat &depth,
-                                 CAMERA_INTRINSIC_PARAMETERS &camera)
-{
-  PointCloud::Ptr cloud(new PointCloud);
-
-  for(int m= 0; m < depth.rows; m+= 2)
-    for(int n= 0; n < depth.cols; n+= 2)
-    {
-      // 获取深度图中(m,n)处的值
-      ushort d= depth.ptr<ushort>(m)[n];
-      // d 可能没有值，若如此，跳过此点
-      if(d == 0)
-        continue;
-      // d 存在值，则向点云增加一个点
-      PointT p;
-
-      // 计算这个点的空间坐标
-      p.z= double(d) / camera.scale;
-      p.x= (n - camera.cx) * p.z / camera.fx;
-      p.y= (m - camera.cy) * p.z / camera.fy;
-
-      // 从rgb图像中获取它的颜色
-      // rgb是三通道的BGR格式图，所以按下面的顺序获取颜色
-      p.b= rgb.ptr<uchar>(m)[n * 3];
-      p.g= rgb.ptr<uchar>(m)[n * 3 + 1];
-      p.r= rgb.ptr<uchar>(m)[n * 3 + 2];
-
-      // 把p加入到点云中
-      cloud->points.push_back(p);
-    }
-  // 设置并保存点云
-  cloud->height= 1;
-  cloud->width= cloud->points.size();
-  cloud->is_dense= false;
-
-  return cloud;
-}
-
-cv::Point3f point2dTo3d(cv::Point3f &point,
-                        CAMERA_INTRINSIC_PARAMETERS &camera)
-{
-  cv::Point3f p;  // 3D 点
-  p.z= double(point.z) / camera.scale;
-  p.x= (point.x - camera.cx) * p.z / camera.fx;
-  p.y= (point.y - camera.cy) * p.z / camera.fy;
-  return p;
-}
-
-// computeKeyPointsAndDesp 同时提取关键点与特征描述子
-void computeKeyPointsAndDesp(FRAME &frame, string detector,
-                             string descriptor)
-{
-  cv::Ptr<cv::FeatureDetector> _detector;
-  cv::Ptr<cv::DescriptorExtractor> _descriptor;
-  cv::initModule_nonfree();
-  _detector= cv::FeatureDetector::create(detector.c_str());
-  _descriptor= cv::DescriptorExtractor::create(descriptor.c_str());
-
-  if(!_detector || !_descriptor)
-  {
-    cerr << "Unknown detector or discriptor type !" << detector << ","
-         << descriptor << endl;
-    return;
-  }
-  _detector->detect(frame.rgb, frame.kp);
-  _descriptor->compute(frame.rgb, frame.kp, frame.desp);
-  // show descriptor
-  cv::Mat imgShow;
-  cv::drawKeypoints(frame.rgb, frame.kp, imgShow, cv::Scalar::all(-1),
-                    cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-  cv::imshow("key points", imgShow);
-  cv::waitKey(1);
-
-  return;
-}
-
-// estimateMotion 计算两个帧之间的运动
-// 输入：帧1和帧2
-// 输出：rvec 和 tvec
-RESULT_OF_PNP
-estimateMotion(FRAME &frame1, FRAME &frame2,
-               CAMERA_INTRINSIC_PARAMETERS &camera)
-{
-  static ParameterReader pd;
-  vector<cv::DMatch> matches;
-  cv::BFMatcher matcher;
-  matcher.match(frame1.desp, frame2.desp, matches);
-
-  RESULT_OF_PNP result;
-  vector<cv::DMatch> goodMatches;
-  double minDis= 9999;
-  double good_match_threshold=
-      atof(pd.getData("good_match_threshold").c_str());
-  for(size_t i= 0; i < matches.size(); i++)
-  {
-    if(matches[i].distance < minDis)
-      minDis= matches[i].distance;
-  }
-
-  if(minDis < 10)
-    minDis= 10;
-
-  for(size_t i= 0; i < matches.size(); i++)
-  {
-    if(matches[i].distance < good_match_threshold * minDis)
-      goodMatches.push_back(matches[i]);
-  }
-  // show matches
-  cv::Mat imgMatches;
-  cv::drawMatches(frame1.rgb, frame1.kp, frame2.rgb, frame2.kp,
-                  goodMatches, imgMatches);
-  cv::imshow("good matches", imgMatches);
-  cv::waitKey(1);
-
-  if(goodMatches.size() <= 5)
-  {
-    result.inliers= -1;
-    return result;
-  }
-  // 第一个帧的三维点
-  vector<cv::Point3f> pts_obj;
-  // 第二个帧的图像点
-  vector<cv::Point2f> pts_img;
-
-  // 相机内参
-  for(size_t i= 0; i < goodMatches.size(); i++)
-  {
-    // query 是第一个, train 是第二个
-    cv::Point2f p= frame1.kp[goodMatches[i].queryIdx].pt;
-    // 获取d是要小心！x是向右的，y是向下的，所以y才是行，x是列！
-    ushort d= frame1.depth.ptr<ushort>(int(p.y))[int(p.x)];
-    if(d == 0)
-      continue;
-    pts_img.push_back(
-        cv::Point2f(frame2.kp[goodMatches[i].trainIdx].pt));
-
-    // 将(u,v,d)转成(x,y,z)
-    cv::Point3f pt(p.x, p.y, d);
-    cv::Point3f pd= point2dTo3d(pt, camera);
-    pts_obj.push_back(pd);
-  }
-
-  if(pts_obj.size() == 0 || pts_img.size() == 0)
-  {
-    result.inliers= -1;
-    return result;
-  }
-
-  double camera_matrix_data[3][3]= { { camera.fx, 0, camera.cx },
-                                     { 0, camera.fy, camera.cy },
-                                     { 0, 0, 1 } };
-
-  // 构建相机矩阵
-  cv::Mat cameraMatrix(3, 3, CV_64F, camera_matrix_data);
-  cv::Mat rvec, tvec, inliers;
-  // 求解pnp
-  cv::solvePnPRansac(pts_obj, pts_img, cameraMatrix, cv::Mat(), rvec,
-                     tvec, false, 100, 1.0, 100, inliers);
-
-  result.rvec= rvec;
-  result.tvec= tvec;
-  // cout<<" T is :"<<tvec<<endl;
-  // cout<<tvec.at<double>(0,0)<<" "<<tvec.at<double>(1,0)<<"
-  // "<<tvec.at<double>(2,0)<<endl;
-  result.inliers= inliers.rows;
-
-  return result;
-}
-
-// cvMat2Eigen
-Eigen::Isometry3d cvMat2Eigen(cv::Mat &rvec, cv::Mat &tvec)
-{
-  cv::Mat R;
-  cv::Rodrigues(rvec, R);
-  Eigen::Matrix3d r;
-  for(int i= 0; i < 3; i++)
-    for(int j= 0; j < 3; j++)
-      r(i, j)= R.at<double>(i, j);
-
-  // 将平移向量和旋转矩阵转换成变换矩阵
-  Eigen::Isometry3d T= Eigen::Isometry3d::Identity();
-
-  Eigen::AngleAxisd angle(r);
-  T= angle;
-  T(0, 3)= tvec.at<double>(0, 0);
-  T(1, 3)= tvec.at<double>(1, 0);
-  T(2, 3)= tvec.at<double>(2, 0);
-  return T;
-}
-
-// joinPointCloud
-// 输入：原始点云，新来的帧以及它的位姿
-// 输出：将新来帧加到原始帧后的图像
-PointCloud::Ptr joinPointCloud(PointCloud::Ptr original,
-                               FRAME &newFrame, Eigen::Isometry3d T,
-                               CAMERA_INTRINSIC_PARAMETERS &camera)
-{
-  PointCloud::Ptr newCloud=
-      image2PointCloud(newFrame.rgb, newFrame.depth, camera);
-
-  // 合并点云
-  PointCloud::Ptr output(new PointCloud());
-  pcl::transformPointCloud(*original, *output, T.matrix());
-  *newCloud+= *output;
-
-  // Voxel grid 滤波降采样
-  static pcl::VoxelGrid<PointT> voxel;
-  static ParameterReader pd;
-  double gridsize= atof(pd.getData("voxel_grid").c_str());
-  voxel.setLeafSize(gridsize, gridsize, gridsize);
-  voxel.setInputCloud(newCloud);
-  PointCloud::Ptr tmp(new PointCloud());
-  voxel.filter(*tmp);
-  return tmp;
-}
-
-CAMERA_INTRINSIC_PARAMETERS getDefaultCamera()
-{
-  ParameterReader pd;
-  CAMERA_INTRINSIC_PARAMETERS camera;
-  camera.fx= atof(pd.getData("camera.fx").c_str());
-  camera.fy= atof(pd.getData("camera.fy").c_str());
-  camera.cx= atof(pd.getData("camera.cx").c_str());
-  camera.cy= atof(pd.getData("camera.cy").c_str());
-  camera.scale= atof(pd.getData("camera.scale").c_str());
-  return camera;
 }
 
 /*subscribe to rgb image*/
